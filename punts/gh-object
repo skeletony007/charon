@@ -1,0 +1,159 @@
+#!/bin/bash
+
+${obj}_init() {
+    ${obj}_user="$1"
+    ${obj}_repo="$2"
+
+##    if [[ ! "${${obj}_user}" =~ ^[[:alnum:]]+$ ]]; then
+##        echo "Error: Invalid username input. Usernames must be alphanumeric." >&2
+##        return 1
+##    fi
+##
+##    if [[ ! "${${obj}_repo}" =~ ^[[:alnum:]]+$ ]]; then
+##        echo "Error: Invalid repository input. Repository names must be alphanumeric." >&2
+##        return 1
+##    fi
+}
+
+${obj}_get_url() {
+    if [[ "${${obj}_asset_names}" == "" ]]; then
+        local url_pattern="https://api.github.com/repos/%s/%s/releases/latest"
+
+        ${obj}_URL="$(printf "$url_pattern" "${${obj}_user}" "${${obj}_repo}")"
+    fi
+
+    echo "${${obj}_URL}"
+}
+
+${obj}_get_api_data() {
+    local value="$1"
+    local URL="$2"
+
+    local temp_data="$(curl -s "$URL" | grep -oE "\"$value\": \"[^\"]*")"
+    local processed_data="$(echo "$temp_data" | sed "s/\"$value\": \"//")"
+
+    echo "$processed_data"
+}
+
+${obj}_get_download_urls() {
+    if [[ "${${obj}_download_urls}" == "" ]]; then
+        local api_value="browser_download_url"
+        local API_URL="$(${obj}_get_url)"
+
+        ${obj}_download_urls="$(${obj}_get_api_data "$api_value" "$API_URL")"
+    fi
+
+    echo "${${obj}_download_urls}"
+}
+
+${obj}_get_download_url() {
+    local asset_name="$1"
+
+    local browser_download_urls="$(${obj}_get_download_urls)"
+    local browser_download_url="$(echo "$browser_download_urls" | grep -E "/$asset_name$")"
+
+    echo "$browser_download_url"
+}
+
+${obj}_get_asset_names() {
+    if [[ "${${obj}_asset_names}" == "" ]]; then
+        ${obj}_asset_names="$(basename "$(${obj}_get_download_urls)")"
+    fi
+
+    echo "${${obj}_asset_names}"
+}
+
+${obj}_get_remote_version() {
+    if [[ "${${obj}_remote_version}" == "" ]]; then
+        local api_value="tag_name"
+        local API_URL="$(${obj}_get_url)"
+
+        local tag_name="$(${obj}_get_api_data "$api_value" "$API_URL")"
+
+        ${obj}_remote_version="$tag_name"
+    fi
+
+    echo "${${obj}_remote_version}"
+}
+
+## An abstract method to get the local version of a program
+## - Implement this method with program specific settings in the main script
+## - This method body is the default implementation
+${obj}_get_local_version() {
+    if [[ "${${obj}_local_version}" == "" ]]; then
+        local command="${${obj}_repo}"
+        local options="--version"
+        local version_tag_regex="[0-9]+\.[0-9]+\.[0-9]+"
+
+        local full_local_version="$("$command" $options)"
+        ${obj}_local_version="v$(echo "$full_local_version" | grep -oE "$version_tag_regex")"
+    fi
+
+    echo "${${obj}_local_version}"
+}
+
+${obj}_is_latest() {
+    local remote_version="$(${obj}_get_remote_version)"
+    local local_version="$(${obj}_get_local_version)"
+
+    if [ "$local_version" == "$remote_version" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+${obj}_download_asset() {
+    local asset_name="$1"
+    local output="$2"
+
+    local browser_download_url="$(${obj}_get_download_url "$asset_name")"
+
+    curl -L -o "$output" "$browser_download_url"
+}
+
+${obj}_release_menu() {
+    case "$(uname -s)" in
+        "Darwin")
+            local os_name="macos"
+            ;;
+        "Linux")
+            local os_name="linux"
+            ;;
+        *)
+            echo "Unsupported operating system"
+            return 1
+            ;;
+    esac
+    local arch_name="$(uname -m)"
+
+    echo "Detected operating system: $os_name \nDetected architecture: $arch_name"
+
+    local asset_names="$(${obj}_get_asset_names)"
+
+    local release_names_with_arch_and_os="$(echo "$asset_names" | grep -Ei "$os_name.*$arch_name|$arch_name.*$os_name")"
+    local release_names_with_arch_or_os="$(echo "$asset_names" | grep -Ei "$os_name|$arch_name")"
+
+    local release_names=""
+    if [[ ! "$release_names_with_arch_and_os" == "" ]]; then
+        release_names="$release_names_with_arch_and_os"
+    elif [[ ! "$release_names_with_arch_or_os" == "" ]]; then
+        release_names="$release_names_with_arch_or_os"
+    else
+        release_names="$asset_names"
+    fi
+
+    local selected_release=""
+    PS3="Select a release to download: "
+    select release in $release_names; do
+        if [[ -n "$release" ]]; then
+            selected_release="$release"
+            break
+        else
+            echo "Invalid selection, please choose a valid release."
+        fi
+    done
+
+    echo "$selected_release"
+}
+

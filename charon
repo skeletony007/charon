@@ -1,0 +1,29 @@
+#!/bin/bash
+
+import() {
+    local URL="$1"
+    curl --proto '=https' -sSf "$URL" | sh
+}
+
+ROOT_DIR="https://raw.githubusercontent.com/skeletony007/charon/main"
+BASH_UTILS_DIR="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+
+import "$BASH_UTILS_DIR/object/object"
+
+action=$1
+
+case $action in
+    install|uninstall)
+        shift
+        programs="$@"
+        for program in "$programs"; do
+            ferry="$(curl "$ROOT_DIR/ferries/$program")"
+            create_object $program "$ferry"
+            ${$program}_${action}
+        done
+    ;;
+    *)
+    echo "$(curl "$ROOT_DIR/usage")"
+    ;;
+esac
+
