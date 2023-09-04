@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CHARON_URL="https://raw.githubusercontent.com/skeletony007/charon/main/charon"
+CHARON_DIR="https://raw.githubusercontent.com/skeletony007/charon/main/charon"
 
-curl --proto '=https' -sSfL "$CHARON_URL" | sh
+curl --proto '=https' -sSfL "$CHARON_DIR" | sh
 
