@@ -2,11 +2,11 @@
 
 get_url_body() {
     local URL="$1"
-    curl --proto '=https' -sSf "$url"
+    curl --proto '=https' -sSf "$URL"
 }
 
 eval_url_body() {
-    local url="$1"
+    local URL="$1"
     eval "$(get_url_body "$URL")"
 }
 
