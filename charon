@@ -1,14 +1,19 @@
 #!/bin/bash
 
-eval_remote() {
+get_url_body() {
     local URL="$1"
-    eval "$(curl --proto '=https' -sSf "$URL")"
+    curl --proto '=https' -sSf "$url"
 }
 
-ROOT_DIR="https://raw.githubusercontent.com/skeletony007/charon/main"
-BASH_UTILS_DIR="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+eval_url_body() {
+    local url="$1"
+    eval "$(get_url_body "$URL")"
+}
 
-eval_remote "$BASH_UTILS_DIR/object/object"
+ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
+BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+
+eval_url_body "$BASH_UTILS_DIR/object/object"
 
 action=$1
 
@@ -17,13 +22,13 @@ case $action in
         shift
         programs="$@"
         for program in "$programs"; do
-            ferry="$(curl "$ROOT_DIR/ferries/$program")"
+            ferry="$(curl "$ROOT_URL/ferries/$program")"
             create_object $program "$ferry"
             ${$program}_${action}
         done
     ;;
     --help|-h)
-        echo "$(curl --proto '=https' -sSf "$ROOT_DIR/usage")"
+        get_url_body "$ROOT_URL/usage"
     ;;
     *)
         echo "Invalid command or missing arguments. Use 'charon --help' for usage instructions."
