@@ -48,7 +48,7 @@ ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
 BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 
 eval_url_body "$ROOT_URL/colors"
-eval_url_body "$BASH_UTILS_URL/object/objects" # error here
+eval_url_body "$BASH_UTILS_URL/object/object"
 
 
 action=$1
