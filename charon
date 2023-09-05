@@ -20,12 +20,12 @@ report() {
     done
 
     if [ "$exit_status" -ne 0 ]; then
-        echo "${RED}ERROR${NC}  $error_message" >&2
+        echo -e "${RED}ERROR${NC}  $error_message" >&2
         exit "$exit_status"
     fi
 
     if [ -n "$success_message" ]; then
-        echo "$success_message"
+        echo -e "$success_message"
     fi
 }
 
@@ -66,7 +66,7 @@ case $action in
         get_url_body "$ROOT_URL/usage"
     ;;
     *)
-        echo "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
+        echo -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
     ;;
 esac
 
