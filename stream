@@ -2,5 +2,5 @@
 
 REMOTE_FILE="https://raw.githubusercontent.com/skeletony007/charon/main/charon"
 
-curl --proto '=https' -sSfL "$REMOTE_FILE" | sh
+curl --proto '=https' -sSfL "$REMOTE_FILE" | eval
 
