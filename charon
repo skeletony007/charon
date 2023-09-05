@@ -5,8 +5,7 @@ report() {
     local success_message=""
     local exit_status=0
 
-    args="$@"
-    for arg in "$args"; do
+    for arg in "$@"; do
         case "$1" in
             -e|--error)
                 error_message="$2"
@@ -37,7 +36,8 @@ get_url_body() {
     local URL="$1"
     
     local url_body="$(curl --proto '=https' -sSf "$URL")"
-    report -e "Failed to get URL body: \"$URL\"" "$url_body"
+    report "$url_body" \
+           -e "Failed to get URL body: \"$URL\""
     
     echo "$url_body"
 }
@@ -45,13 +45,16 @@ get_url_body() {
 eval_url_body() {
     local URL="$1"
 
-    report -e "Failed to evaluate URL body at: \"$URL\"" "$(eval "$(get_url_body "$URL")")"
+    local url_body="$(get_url_body "$URL")"
+
+    report "$(eval "$url_body")" \
+           -e "Failed to evaluate URL body at: \"$URL\""
 }
 
 ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
 BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 
-eval_url_body "$ROOT_URL/color"
+eval_url_body "$ROOT_URL/colors"
 eval_url_body "$BASH_UTILS_URL/object/object"
 
 
@@ -60,8 +63,7 @@ action=$1
 case $action in
     install|uninstall)
         shift
-        programs="$@"
-        for program in "$programs"; do
+        for program in "$@"; do
             ferry="$(get_url_body "$ROOT_URL/ferries/$program")"
             create_object $program "$ferry"
             ${$program}_${action}
