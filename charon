@@ -1,19 +1,59 @@
 #!/bin/bash
 
+report() {
+    local error_message=""
+    local success_message=""
+    local exit_status=0
+
+    args="$@"
+    for arg in "$args"; do
+        case "$1" in
+            -e|--error)
+                error_message="$2"
+                shift 2
+                ;;
+            -m|--message)
+                success_message="$2"
+                shift 2
+                ;;
+            *)
+                exit_status="$1"
+                shift
+                ;;
+        esac
+    done
+
+    if [ "$exit_status" -ne 0 ]; then
+        echo "${RED}ERROR${NC}  $error_message" >&2
+        exit "$exit_status"
+    fi
+
+    if [ -n "$success_message" ]; then
+        echo "$success_message"
+    fi
+}
+
 get_url_body() {
     local URL="$1"
-    curl --proto '=https' -sSf "$URL"
+    
+    local url_body="$(curl --proto '=https' -sSf "$URL")"
+    report -e "Failed to get URL body: \"$URL\"" "$url_body"
+    
+    echo "$url_body"
 }
 
 eval_url_body() {
     local URL="$1"
-    eval "$(get_url_body "$URL")"
+
+    report -e "Failed to evaluate URL body at: \"$URL\"" "$(eval "$(get_url_body "$URL")")"
 }
 
 ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
 BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 
+eval_url_body "$ROOT_URL/colors"
 eval_url_body "$BASH_UTILS_URL/object/object"
+
 
 action=$1
 
@@ -31,7 +71,7 @@ case $action in
         get_url_body "$ROOT_URL/usage"
     ;;
     *)
-        echo "Invalid command or missing arguments. Use 'charon --help' for usage instructions."
+        echo "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
     ;;
 esac
 
