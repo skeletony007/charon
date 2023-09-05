@@ -2,7 +2,7 @@
 
 eval_remote() {
     local URL="$1"
-    curl --proto '=https' -sSf "$URL" | sh
+    eval "$(curl --proto '=https' -sSf "$URL")"
 }
 
 ROOT_DIR="https://raw.githubusercontent.com/skeletony007/charon/main"
