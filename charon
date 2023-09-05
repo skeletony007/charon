@@ -25,7 +25,7 @@ report() {
     fi
 
     if [ -n "$success_message" ]; then
-        echo "$success_message"
+        echo "${GREEN}INFO${NC}   $success_message"
     fi
 }
 
@@ -47,7 +47,7 @@ eval_url_body() {
 ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
 BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 
-eval_url_body "$ROOT_URL/colors"
+eval_url_body "$ROOT_URL/color"
 eval_url_body "$BASH_UTILS_URL/object/object"
 
 
