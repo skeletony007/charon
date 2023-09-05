@@ -22,8 +22,11 @@ case $action in
             ${$program}_${action}
         done
     ;;
+    --help|-h)
+        echo "$(eval_remote "$ROOT_DIR/usage")"
+    ;;
     *)
-    echo "$(eval_remote "$ROOT_DIR/usage")"
+        echo "Invalid command or missing arguments. Use 'charon --help' for usage instructions."
     ;;
 esac
 

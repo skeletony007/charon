@@ -1,0 +1,24 @@
+charon - Dotfiles and Program Installer
+
+Usage:
+  charon [install|uninstall] program1 [program2 program3 ...]
+
+Description:
+  Charon is a script for managing dotfiles and installing associated programs.
+  Use it to streamline your configuration setup and program installations.
+
+Options:
+  - install: Install or update the specified program(s).
+  - uninstall: Uninstall the specified program(s).
+  - program1, program2, ...: Names of the programs to install or uninstall.
+
+Examples:
+  - Install a program:
+    charon install vim
+  - Install multiple programs:
+    charon install vim git zsh
+  - Uninstall a program:
+    charon uninstall vim
+
+For more information and updates, visit: [Your project's URL]
+
