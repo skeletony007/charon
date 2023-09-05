@@ -1,0 +1,26 @@
+#!/bin/bash
+
+get_url_body() {
+    local URL="$1"
+    curl --proto '=https' -sSf "$URL"
+}
+
+eval_url_body() {
+    local URL="$1"
+    eval "$(get_url_body "$URL")"
+}
+
+BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+
+eval_url_body "$BASH_UTILS_URL/shell-functions/shell-functions"
+
+LOCAL_DIR="$HOME/bin"
+LOCAL_FILE="$LOCAL_DIR/charon"
+
+rm "$LOCAL_FILE"
+if [ -z "$(ls -A "$LOCAL_DIR")" ]; then
+    rm -rf "$LOCAL_DIR"
+fi
+
+remove_from_path "$LOCAL_DIR"
+

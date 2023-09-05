@@ -7,3 +7,10 @@ Dotfile and Program Manager
 curl --proto '=https' -sSfL "https://raw.githubusercontent.com/skeletony007/charon/main/install" | sh
 ```
 
+## Uninstall charon
+
+
+```bash
+curl --proto '=https' -sSfL "https://raw.githubusercontent.com/skeletony007/charon/main/uninstall" | sh
+```
+
