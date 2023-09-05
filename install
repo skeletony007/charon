@@ -1,0 +1,10 @@
+#!/bin/bash
+
+REMOTE_FILE="https://raw.githubusercontent.com/skeletony007/charon/main/stream"
+LOCAL_DIR="$HOME/bin"
+LOCAL_FILE="$LOCAL_DIR/charon"
+
+mkdir -p "$LOCAL_DIR"
+curl --proto '=https' -sSfL -o "$LOCAL_FILE" "$REMOTE_FILE" | sh
+chmod 755 "$LOCAL_FILE"
+
