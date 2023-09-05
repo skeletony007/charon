@@ -1,6 +1,6 @@
 #!/bin/bash
 
-import() {
+eval_remote() {
     local URL="$1"
     curl --proto '=https' -sSf "$URL" | sh
 }
@@ -8,7 +8,7 @@ import() {
 ROOT_DIR="https://raw.githubusercontent.com/skeletony007/charon/main"
 BASH_UTILS_DIR="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 
-import "$BASH_UTILS_DIR/object/object"
+eval_remote "$BASH_UTILS_DIR/object/object"
 
 action=$1
 
@@ -23,7 +23,7 @@ case $action in
         done
     ;;
     *)
-    echo "$(curl "$ROOT_DIR/usage")"
+    echo "$(eval_remote "$ROOT_DIR/usage")"
     ;;
 esac
 
