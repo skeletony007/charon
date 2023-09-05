@@ -1,5 +1,19 @@
 #!/bin/bash
 
+get_url_body() {
+    local URL="$1"
+    curl --proto '=https' -sSf "$URL"
+}
+
+eval_url_body() {
+    local URL="$1"
+    eval "$(get_url_body "$URL")"
+}
+
+BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+
+eval_url_body "$BASH_UTILS_URL/shell-functions/shell-functions"
+
 REMOTE_FILE="https://raw.githubusercontent.com/skeletony007/charon/main/stream"
 LOCAL_DIR="$HOME/bin"
 LOCAL_FILE="$LOCAL_DIR/charon"
@@ -7,4 +21,6 @@ LOCAL_FILE="$LOCAL_DIR/charon"
 mkdir -p "$LOCAL_DIR"
 curl --proto '=https' -sSfL -o "$LOCAL_FILE" "$REMOTE_FILE"
 chmod +x "$LOCAL_FILE"
+
+add_to_path "$LOCAL_DIR"
 

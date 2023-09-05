@@ -22,7 +22,7 @@ case $action in
         shift
         programs="$@"
         for program in "$programs"; do
-            ferry="$(curl "$ROOT_URL/ferries/$program")"
+            ferry="$(get_url_body "$ROOT_URL/ferries/$program")"
             create_object $program "$ferry"
             ${$program}_${action}
         done
