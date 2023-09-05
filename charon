@@ -1,11 +1,12 @@
 #!/bin/bash
 
 report() {
+    local exit_status="$?"
     local error_message=""
     local success_message=""
-    local exit_status=0
 
-    for arg in "$@"; do
+    args="$@"
+    for arg in "$args"; do
         case "$1" in
             -e|--error)
                 error_message="$2"
@@ -14,10 +15,6 @@ report() {
             -m|--message)
                 success_message="$2"
                 shift 2
-                ;;
-            *)
-                exit_status="$1"
-                shift
                 ;;
         esac
     done
@@ -35,20 +32,16 @@ report() {
 get_url_body() {
     local URL="$1"
     
-    local url_body="$(curl --proto '=https' -sSf "$URL")"
-    report "$url_body" \
-           -e "Failed to get URL body: \"$URL\""
-    
-    echo "$url_body"
+    curl --proto '=https' -sSf "$URL"
+    report -e "Failed to get URL body: \"$URL\""
 }
 
 eval_url_body() {
     local URL="$1"
 
     local url_body="$(get_url_body "$URL")"
-
-    report "$(eval "$url_body")" \
-           -e "Failed to evaluate URL body at: \"$URL\""
+    eval "$url_body"
+    report -e "Failed to evaluate URL body at: \"$URL\""
 }
 
 ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
