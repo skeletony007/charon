@@ -1,0 +1,7 @@
+#!/bin/bash
+
+${obj}_init() {
+    local program_object="$(get_url_body "$ROOT_URL/punts/program")"
+    create_object ${obj} "$program_object"
+}
+
