@@ -59,7 +59,6 @@ case $action in
         for program in "$@"; do
             ferry="$(get_url_body "$ROOT_URL/ferries/$program")"
             create_object $program "$ferry"
-            report -e "fail" -i "pass"
             ${program}_${action}
         done
     ;;
