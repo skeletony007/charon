@@ -54,7 +54,7 @@ eval_url_body "$BASH_UTILS_URL/object/object"
 action=$1
 
 case $action in
-    install|uninstall)
+    install|uninstall|config)
         shift
         for program in "$@"; do
             ferry="$(get_url_body "$ROOT_URL/ferries/$program")"
