@@ -59,7 +59,7 @@ case $action in
         for program in "$@"; do
             ferry="$(get_url_body "$ROOT_URL/ferries/$program")"
             create_object $program "$ferry"
-            ${$program}_${action}
+            ${program}_${action}
         done
     ;;
     --help|-h)
