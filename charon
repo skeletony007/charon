@@ -1,31 +1,31 @@
-#!/bin/sh
+#!/bin/bash
 
 report() {
     local exit_status="$?"
-    local error_message=""
-    local success_message=""
 
-    args="$@"
-    for arg in "$args"; do
+    local error_message=""
+    local info_message=""
+
+    for arg in "$@"; do
         case "$1" in
             -e|--error)
                 error_message="$2"
                 shift 2
                 ;;
-            -m|--message)
-                success_message="$2"
+            -i|--info)
+                info_message="$2"
                 shift 2
                 ;;
         esac
     done
 
     if [ "$exit_status" -ne 0 ]; then
-        echo "${RED}ERROR${NC}  $error_message" >&2
+        echo -e "${RED}ERROR${NC}  $error_message" >&2
         exit "$exit_status"
     fi
 
-    if [ -n "$success_message" ]; then
-        echo "${GREEN}INFO${NC}   $success_message"
+    if [ -n "$info_message" ]; then
+        echo -e "${GREEN}INFO${NC}   $info_message"
     fi
 }
 
@@ -66,7 +66,7 @@ case $action in
         get_url_body "$ROOT_URL/usage"
     ;;
     *)
-        echo "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
+        echo -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
     ;;
 esac
 
