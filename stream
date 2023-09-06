@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 REMOTE_FILE="https://raw.githubusercontent.com/skeletony007/charon/main/charon"
 
