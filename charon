@@ -33,7 +33,7 @@ secure_curl() {
     local URL="$1"
     
     curl --proto '=https' -sSf "$URL"
-    report -e "Failed to transfer data from \"$URL\""
+    report -e "Failed to transfer data from ${YELLOW}$URL${NC}"
 }
 
 eval_curl() {
@@ -41,7 +41,7 @@ eval_curl() {
 
     local data="$(secure_curl "$URL")"
     eval "$data"
-    report -e "Failed to evaluate data from \"$URL\""
+    report -e "Failed to evaluate data from ${YELLOW}$URL${NC}"
 }
 
 ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
@@ -50,7 +50,7 @@ BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 eval_curl "$ROOT_URL/colors"
 eval_curl "$BASH_UTILS_URL/object/object"
 
-abstract_program="$(secure_curl "$ROOT_URL/punts/abstract-program")"
+abstract_ferry="$(secure_curl "$ROOT_URL/punts/abstract-ferry")"
 
 
 action=$1
@@ -61,7 +61,7 @@ case $action in
         for program in "$@"; do
             ferry="$(secure_curl "$ROOT_URL/ferries/$program")"
 
-            create_object $program "$abstract_program"
+            create_object $program "$abstract_ferry"
             create_object $program "$ferry"
 
             ${program}_${action}
