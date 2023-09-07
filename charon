@@ -3,8 +3,8 @@
 report() {
     local exit_status="$?"
     
-    local error_message=""
-    local info_message=""
+    local error_message
+    local info_message
 
     for arg in "$@"; do
         case "$1" in
@@ -21,12 +21,11 @@ report() {
 
     if [ "$exit_status" -ne 0 ]; then
         echo -e "${RED}ERROR${NC}  $error_message" >&2
-        return "$exit_status"
-    fi
-
-    if [ -n "$info_message" ]; then
+    else
         echo -e "${GREEN}INFO${NC}   $info_message"
     fi
+
+    return "$exit_status"
 }
 
 secure_curl() {
