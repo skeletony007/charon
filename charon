@@ -21,7 +21,7 @@ report() {
 
     if [ "$exit_status" -ne 0 ]; then
         echo -e "${RED}ERROR${NC}  $error_message" >&2
-        exit "$exit_status"
+        return "$exit_status"
     fi
 
     if [ -n "$info_message" ]; then
