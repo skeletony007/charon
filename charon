@@ -3,8 +3,8 @@
 report() {
     local exit_status="$?"
 
-    local error
-    local intent
+    local error=""
+    local intent=""
 
     for arg in "$@"; do
         case "$1" in
