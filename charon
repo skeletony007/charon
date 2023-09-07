@@ -2,27 +2,27 @@
 
 report() {
     local exit_status="$?"
-    
-    local error_message
-    local info_message
+
+    local error
+    local intent
 
     for arg in "$@"; do
         case "$1" in
             -e|--error)
-                error_message="$2"
+                error="$2"
                 shift 2
                 ;;
-            -i|--info)
-                info_message="$2"
+            -i|--intent)
+                intent="$2"
                 shift 2
                 ;;
         esac
     done
 
     if [ "$exit_status" -ne 0 ]; then
-        echo -e "${RED}ERROR${NC}  $error_message" >&2
+        echo -e "${RED}ERROR${NC}  $error" >&2
     else
-        echo -e "${GREEN}INFO${NC}   $info_message"
+        echo -e "${GREEN}INFO${NC}   $intent"
     fi
 
     return "$exit_status"
@@ -71,7 +71,8 @@ case $action in
         secure_curl "$ROOT_URL/usage"
     ;;
     *)
-        echo -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
+        echo -e "Invalid command or missing arguments.
+                 Use ${YELLOW}charon --help${NC} for usage instructions."
     ;;
 esac
 
