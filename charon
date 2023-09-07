@@ -59,7 +59,7 @@ case $action in
     install|uninstall|config)
         shift
         for program in "$@"; do
-            ferry="$(get_url_body "$ROOT_URL/ferries/$program")"
+            ferry="$(secure_curl "$ROOT_URL/ferries/$program")"
 
             create_object $program "$abstract_program"
             create_object $program "$ferry"
