@@ -71,7 +71,7 @@ case $action in
         secure_curl "$ROOT_URL/usage"
     ;;
     *)
-        echo -e "Invalid command or missing arguments.
+        echo -e "Invalid command or missing arguments. \
                  Use ${YELLOW}charon --help${NC} for usage instructions."
     ;;
 esac
