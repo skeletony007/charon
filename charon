@@ -2,7 +2,7 @@
 
 report() {
     local exit_status="$?"
-
+    
     local error_message=""
     local info_message=""
 
@@ -29,26 +29,28 @@ report() {
     fi
 }
 
-get_url_body() {
+secure_curl() {
     local URL="$1"
     
     curl --proto '=https' -sSf "$URL"
-    report -e "Failed to get URL body: \"$URL\""
+    report -e "Failed to transfer data from \"$URL\""
 }
 
-eval_url_body() {
+eval_curl() {
     local URL="$1"
 
-    local url_body="$(get_url_body "$URL")"
-    eval "$url_body"
-    report -e "Failed to evaluate URL body at: \"$URL\""
+    local data="$(secure_curl "$URL")"
+    eval "$data"
+    report -e "Failed to evaluate data from \"$URL\""
 }
 
 ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
 BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 
-eval_url_body "$ROOT_URL/colors"
-eval_url_body "$BASH_UTILS_URL/object/object"
+eval_curl "$ROOT_URL/colors"
+eval_curl "$BASH_UTILS_URL/object/object"
+
+abstract_program="$(secure_curl "$ROOT_URL/punts/abstract-program")"
 
 
 action=$1
@@ -58,13 +60,16 @@ case $action in
         shift
         for program in "$@"; do
             ferry="$(get_url_body "$ROOT_URL/ferries/$program")"
+
+            create_object $program "$abstract_program"
             create_object $program "$ferry"
+
             ${program}_${action}
-            report -e "Not implemented"
+            report -e "$action failed" -i "$action succeeded"
         done
     ;;
     --help|-h)
-        get_url_body "$ROOT_URL/usage"
+        secure_curl "$ROOT_URL/usage"
     ;;
     *)
         echo -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
