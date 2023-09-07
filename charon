@@ -19,9 +19,9 @@ report() {
         esac
     done
 
-    if [ "$exit_status" -ne 0 ]; then
+    if [ "$exit_status" -ne 0 && -n "$error" ]; then
         echo -e "${RED}ERROR${NC}  $error" >&2
-    else
+    elif [ -n "$intent" ]
         echo -e "${GREEN}INFO${NC}   $intent"
     fi
 
