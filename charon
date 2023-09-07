@@ -21,7 +21,7 @@ report() {
 
     if [ "$exit_status" -ne 0 && -n "$error" ]; then
         echo -e "${RED}ERROR${NC}  $error" >&2
-    elif [ -n "$intent" ]
+    elif [ -n "$intent" ]; then
         echo -e "${GREEN}INFO${NC}   $intent"
     fi
 
