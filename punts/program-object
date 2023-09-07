@@ -1,17 +1,17 @@
 #!/bin/bash
 
 ${obj}_install() {
-    report -m "This method would install the program"
+    report -i "This method would install the program"
     exit 1
 }
 
 ${obj}_uninstall() {
-    report -m "This method would uninstall the program" 
+    report -i "This method would uninstall the program" 
     exit 1
 }
 
 ${obj}_config() {
-    report -m "This method would configure the program"
+    report -i "This method would configure the program"
     exit 1
 }
 
