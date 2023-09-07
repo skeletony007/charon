@@ -1,17 +1,17 @@
 #!/bin/bash
 
 ${obj}_install() {
-    echo "Not implemented: This method would install the program"
+    echo "This method would install the program"
     exit 1
 }
 
 ${obj}_uninstall() {
-    echo "Not implemented: This method would uninstall the program"
+    echo "This method would uninstall the program"
     exit 1
 }
 
 ${obj}_config() {
-    echo "Not implemented: This method would configure the program"
+    echo "This method would configure the program"
     exit 1
 }
 
