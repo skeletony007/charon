@@ -3,8 +3,8 @@
 report() {
     local exit_status="$?"
 
-    local error=""
-    local intent=""
+    local error
+    local intent
 
     for arg in "$@"; do
         case "$1" in
@@ -21,7 +21,7 @@ report() {
 
     if [ "$exit_status" -ne 0 ]; then
         echo -e "${RED}ERROR${NC}  $error" >&2
-    elif [ -n $intent ]; then
+    else
         echo -e "${GREEN}INFO${NC}   $intent"
     fi
 
@@ -57,14 +57,15 @@ action=$1
 case $action in
     install|uninstall|config)
         shift
-        for program in "$@"; do
-            ferry="$(secure_curl "$ROOT_URL/ferries/$program")"
+        for ferry in "$@"; do
+            ferry_data="$(secure_curl "$ROOT_URL/ferries/$ferry")"
 
-            create_object $program "$abstract_ferry"
-            create_object $program "$ferry"
+            create_object $ferry "$abstract_ferry"
+            create_object $ferry "$ferry_data"
 
-            ${program}_${action}
-            report -e "$action failed" -i "$action succeeded"
+            ${ferry}_${action}
+            report -e "$action failed" \
+                   -i "$action succeeded"
         done
     ;;
     --help|-h)
