@@ -2,7 +2,6 @@
 
 ${obj}_init() {
     local program_object="$(get_url_body "$ROOT_URL/punts/program-object")"
-    echo "$program_object"
     create_object ${obj} "$program_object"
 }
 
