@@ -3,8 +3,8 @@
 report() {
     local exit_status="$?"
 
-    local error
-    local intent
+    local error=""
+    local intent=""
 
     for arg in "$@"; do
         case "$1" in
@@ -71,8 +71,7 @@ case $action in
         secure_curl "$ROOT_URL/usage"
     ;;
     *)
-        echo -e "Invalid command or missing arguments. \
-                 Use ${YELLOW}charon --help${NC} for usage instructions."
+        echo -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
     ;;
 esac
 
