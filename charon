@@ -30,7 +30,8 @@ report() {
 secure_curl() {
     local URL="$1"
     
-    curl --proto '=https' -sSf "$URL" -e >(report -e)
+    local exit_status="$(curl --proto '=https' -sSf "$URL")"
+    report -e "$exit_status"
     report -e "Failed to transfer data from ${YELLOW}$URL${NC}"
 }
 
