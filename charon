@@ -1,28 +1,27 @@
 #!/bin/bash
 
 report() {
-    local exit_status="$?"
+    local exit_status=$?
 
     local error
-    local intent
+    local info
 
     for arg in "$@"; do
         case "$1" in
             -e|--error)
                 error="$2"
-                shift 2
                 ;;
-            -i|--intent)
-                intent="$2"
-                shift 2
+            -i|--info)
+                info="$2"
                 ;;
         esac
+        shift 2
     done
 
     if [ "$exit_status" -ne 0 ] && [ -n "$error" ]; then
         echo -e "${RED}ERROR${NC}  $error" >&2
-    elif [ -n "$intent" ]; then
-        echo -e "${GREEN}INFO${NC}   $intent"
+    elif [ -n "$info" ]; then
+        echo -e "${GREEN}INFO${NC}   $info"
     fi
 
     return "$exit_status"
@@ -31,7 +30,7 @@ report() {
 secure_curl() {
     local URL="$1"
     
-    curl --proto '=https' -sSf "$URL"
+    curl --proto '=https' -sSf "$URL" >(report -e)
     report -e "Failed to transfer data from ${YELLOW}$URL${NC}"
 }
 
