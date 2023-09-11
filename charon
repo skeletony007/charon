@@ -60,10 +60,10 @@ case $action in
 
             case $? in
                 0)
-                    msg -e "$action unsuccessful"
+                    msg -i "$action succeeded"
                     ;;
                 *)
-                    msg -i "$action succeeded"
+                    msg -e "$action unsuccessful"
                     ;;
             esac
         done
