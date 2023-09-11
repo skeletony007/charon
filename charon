@@ -23,7 +23,7 @@ secure_curl() {
     
     if ! curl --proto '=https' -sSf "$URL"; then
         msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"
-        return 1
+        echo ""; return 1
     fi
 }
 
