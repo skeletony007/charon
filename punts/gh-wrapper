@@ -76,20 +76,9 @@ ${obj}_get_remote_version() {
     echo "${${obj}_remote_version}"
 }
 
-## An abstract method to get the local version of a program
-## - Implement this method with program specific settings in the main script
-## - This method body is the default implementation
 ${obj}_get_local_version() {
-    if [[ "${${obj}_local_version}" == "" ]]; then
-        local command="${${obj}_repo}"
-        local options="--version"
-        local version_tag_regex="[0-9]+\.[0-9]+\.[0-9]+"
-
-        local full_local_version="$("$command" $options)"
-        ${obj}_local_version="v$(echo "$full_local_version" | grep -oE "$version_tag_regex")"
-    fi
-
-    echo "${${obj}_local_version}"
+    msg -e "Not implemented: This method would get the local version of the cli program: Implemented in \`cli-program\` object"
+    return 1
 }
 
 ${obj}_is_latest() {

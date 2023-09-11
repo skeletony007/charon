@@ -1,17 +1,17 @@
 #!/bin/bash
 
 ${obj}_install() {
-    msg -i "This method would install $ferry"
+    msg -i "Not implemented: This method would install $ferry"
     return 1
 }
 
 ${obj}_uninstall() {
-    msg -i "This method would uninstall $ferry" 
+    msg -i "Not implemented: This method would uninstall $ferry" 
     return 1
 }
 
 ${obj}_config() {
-    msg -i "This method would configure $ferry"
+    msg -i "Not implemented: This method would configure $ferry"
     return 1
 }
 

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+${obj}_init() {
+    ${obj}_command="$1"
+}
+
+${obj}_get_local_version() {
+    if [[ "${${obj}_local_version}" == "" ]]; then
+        local command="${${obj}_command}"
+        local options="--version"
+        local version_tag_regex="[0-9]+\.[0-9]+\.[0-9]+"
+
+        local full_local_version="$("$command" $options)"
+        ${obj}_local_version="v$(echo "$full_local_version" | grep -oE "$version_tag_regex")"
+    fi
+
+    echo "${${obj}_local_version}"
+}
+
