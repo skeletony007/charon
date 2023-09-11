@@ -34,6 +34,7 @@ eval_curl() {
     local data="$(secure_curl "$URL")"
     if ! eval "$data"; then
         msg -e "Failed to evaluate data from ${YELLOW}$URL${NC}"
+        return 1
     fi
 }
 
