@@ -1,17 +1,17 @@
 #!/bin/bash
 
 ${obj}_install() {
-    report -i "This method would install $ferry"
+    msg -i "This method would install $ferry"
     return 1
 }
 
 ${obj}_uninstall() {
-    report -i "This method would uninstall $ferry" 
+    msg -i "This method would uninstall $ferry" 
     return 1
 }
 
 ${obj}_config() {
-    report -i "This method would configure $ferry"
+    msg -i "This method would configure $ferry"
     return 1
 }
 

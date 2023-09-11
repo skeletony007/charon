@@ -1,48 +1,45 @@
 #!/bin/bash
 
-report() {
-    local exit_status=$?
-
-    local error
-    local info
+msg() {
+    local message
 
     for arg in "$@"; do
-        case "$1" in
+        case $1 in
             -e|--error)
-                error="$2"
+                message="$2"
+                echo -e "${RED}ERROR${NC}  $message" >&2
+                shift 2
                 ;;
             -i|--info)
-                info="$2"
+                message="$2"
+                echo -e "${GREEN}INFO${NC}   $message"
+                shift 2
+                ;;
+            *)
+                message="$1"
+                echo -e "$message"
+                shift
                 ;;
         esac
-        shift 2
     done
-
-    if [ "$exit_status" -ne 0 ] && [ -n "$error" ]; then
-        echo -e "${RED}ERROR${NC}  $error" >&2
-    elif [ -n "$info" ]; then
-        echo -e "${GREEN}INFO${NC}   $info"
-    fi
-
-    return "$exit_status"
 }
 
 secure_curl() {
     local URL="$1"
     
-    local data="$(curl --proto '=https' -sSf "$URL")"
-    report -e "$data"
-    report -e "Failed to transfer data from ${YELLOW}$URL${NC}"
-
-    echo "$data"
+    if ! curl --proto '=https' -sSf "$URL"; then
+        msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"
+        echo ""; return 1
+    fi
 }
 
 eval_curl() {
     local URL="$1"
 
     local data="$(secure_curl "$URL")"
-    eval "$data"
-    report -e "Failed to evaluate data from ${YELLOW}$URL${NC}"
+    if ! eval "$data"; then
+        msg -e "Failed to evaluate data from ${YELLOW}$URL${NC}"
+    fi
 }
 
 ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
@@ -66,15 +63,19 @@ case $action in
             create_object $ferry "$ferry_data"
 
             ${ferry}_${action}
-            report -e "$action failed" \
-                   -i "$action succeeded"
+
+            if [ $? -ne 0 ]; then
+                msg -e "$action failed"
+            else
+                msg -i "$action succeeded"
+            fi
         done
     ;;
     --help|-h)
         secure_curl "$ROOT_URL/usage"
     ;;
     *)
-        echo -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
+        msg -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
     ;;
 esac
 
