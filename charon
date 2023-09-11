@@ -27,7 +27,7 @@ secure_curl() {
     
     if ! curl --proto '=https' -sSf "$URL"; then
         msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"
-        echo ""; return 1
+        return 1
     fi
 }
 
@@ -63,7 +63,7 @@ case $action in
             ${ferry}_${action}
 
             if [ $? -ne 0 ]; then
-                msg -e "$action failed"
+                msg -e "$action unsuccessful"
             else
                 msg -i "$action succeeded"
             fi
