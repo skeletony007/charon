@@ -3,25 +3,23 @@
 msg() {
     local message
 
-    for arg in "$@"; do
-        case $1 in
-            -e|--error)
-                message="$2"
-                echo -e "${RED}ERROR${NC}  $message" >&2
-                shift 2
-                ;;
-            -i|--info)
-                message="$2"
-                echo -e "${GREEN}INFO${NC}   $message"
-                shift 2
-                ;;
-            *)
-                message="$1"
-                echo -e "$message"
-                shift
-                ;;
-        esac
-    done
+    case $1 in
+        -e|--error)
+            message="$2"
+            echo -e "${RED}ERROR${NC}  $message" >&2
+            shift 2
+            ;;
+        -i|--info)
+            message="$2"
+            echo -e "${GREEN}INFO${NC}   $message"
+            shift 2
+            ;;
+        *)
+            message="$1"
+            echo -e "$message"
+            shift
+            ;;
+    esac
 }
 
 secure_curl() {
