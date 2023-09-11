@@ -5,17 +5,18 @@ msg() {
 
     case $1 in
         -e|--error)
-            message="${RED}ERROR${NC}  $2" >&2
+            message="$2"
+            echo -e "${RED}ERROR${NC}  $message" >&2
             ;;
         -i|--info)
-            message="${GREEN}INFO${NC}   $2"
+            message="$2"
+            echo -e "${GREEN}INFO${NC}   $message"
             ;;
         *)
             message="$1"
+            echo -e "$message"
             ;;
     esac
-
-    echo -e "$message"
 }
 
 secure_curl() {
@@ -23,7 +24,7 @@ secure_curl() {
     
     if ! curl --proto '=https' -sSf "$URL"; then
         msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"
-        echo ""; return 1
+        return 1
     fi
 }
 
