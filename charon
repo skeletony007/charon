@@ -25,23 +25,27 @@ secure_curl() {
         msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"
         return 1
     fi
+
+    [ -z $@ ] || secure_curl $@
 }
 
 eval_curl() {
-    local URL="$1"
+    local URL="$1"; shift
 
     local data="$(secure_curl "$URL")"
     if ! eval "$data"; then
         msg -e "Failed to evaluate data from ${YELLOW}$URL${NC}"
         return 1
     fi
+
+
+    [ -z $@ ] || eval_curl $@
 }
 
 ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
 BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 
-eval_curl "$ROOT_URL/colors"
-eval_curl "$BASH_UTILS_URL/object/object"
+eval_curl "$ROOT_URL/colors" "$BASH_UTILS_URL/object/object"
 
 abstract_ferry="$(secure_curl "$ROOT_URL/punts/abstract-ferry")"
 
