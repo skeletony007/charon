@@ -48,7 +48,7 @@ DOTFILES_ROOT="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
 
 eval_curl "$CHARON_ROOT/colors" "$BASH_UTILS_ROOT/object/object"
 
-gh_wrapper_data="$(secure_curl "$CHARON_ROOT/punts/gh_wrapper")"
+gh_wrapper_data="$(secure_curl "$CHARON_ROOT/punts/gh-wrapper")"
 
 create_object charon "$gh_wrapper_data" "skeletony007" "charon"
 
