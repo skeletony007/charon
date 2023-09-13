@@ -41,13 +41,13 @@ eval_curl() {
     [ -z $@ ] || eval_curl $@
 }
 
+
 ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
 BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 
 eval_curl "$ROOT_URL/colors" "$BASH_UTILS_URL/object/object"
 
 abstract_ferry="$(secure_curl "$ROOT_URL/punts/abstract-ferry")"
-
 
 main() {
     action=$1
