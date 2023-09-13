@@ -1,1 +1,6 @@
 #!/bin/bash
+
+{obj}_init() {
+    create_object ${obj} "$cli_tool_data"
+}
+

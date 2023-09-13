@@ -42,10 +42,11 @@ eval_curl() {
 }
 
 
-ROOT_URL="https://raw.githubusercontent.com/skeletony007/charon/main"
-BASH_UTILS_URL="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+CHARON_ROOT="https://raw.githubusercontent.com/skeletony007/charon/main"
+BASH_UTILS_ROOT="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+DOTFILES_ROOT="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
 
-eval_curl "$ROOT_URL/colors" "$BASH_UTILS_URL/object/object"
+eval_curl "$CHARON_ROOT/colors" "$BASH_UTILS_ROOT/object/object"
 
 abstract_ferry="$(secure_curl "$ROOT_URL/punts/abstract-ferry")"
 
