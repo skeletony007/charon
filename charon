@@ -27,7 +27,7 @@ msg() {
     esac
     
     local tail="$@"
-    [ -z "$tail" ] && msg $tail || echo -e "${prefix}${message}" $redirect
+    [ -z "$tail" ] && echo -e "${prefix}${message}" $redirect || msg $tail
 }
 
 secure_curl() {
