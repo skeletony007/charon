@@ -64,7 +64,7 @@ main() {
             [ $? -eq 0 ] && msg -i "$action successful" \
                          || msg -e "$action unsuccessful"
 
-            shift; [ -z $@ ] || main $action $@
+            shift 2; [ -z $@ ] || main $action $@
         ;;
         --help|-h)
             secure_curl "$ROOT_URL/usage"
