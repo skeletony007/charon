@@ -52,7 +52,7 @@ gh_wrapper_data="$(secure_curl "$CHARON_ROOT/punts/gh_wrapper")"
 
 create_object charon "$gh_wrapper_data"
 
-charon_get_apt_data "name" "https://api.github.com/repositories/687117389/contents/punts"
+charon_get_api_data "name" "https://api.github.com/repositories/687117389/contents/punts"
 
 abstract_ferry="$(secure_curl "$CHARON_ROOT/punts/abstract-ferry")"
 
