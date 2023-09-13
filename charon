@@ -50,7 +50,7 @@ eval_curl "$CHARON_ROOT/colors" "$BASH_UTILS_ROOT/object/object"
 
 gh_wrapper_data="$(secure_curl "$CHARON_ROOT/punts/gh_wrapper")"
 
-create_object charon "$gh_wrapper_data"
+create_object charon "$gh_wrapper_data" "skeletony007" "charon"
 
 charon_get_api_data "name" "https://api.github.com/repositories/687117389/contents/punts"
 
