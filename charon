@@ -38,7 +38,6 @@ eval_curl() {
         return 1
     fi
 
-
     [ -z $@ ] || eval_curl $@
 }
 
@@ -50,34 +49,31 @@ eval_curl "$ROOT_URL/colors" "$BASH_UTILS_URL/object/object"
 abstract_ferry="$(secure_curl "$ROOT_URL/punts/abstract-ferry")"
 
 
-action=$1
+main() {
+    action=$1
 
-case $action in
-    install|uninstall|config)
-        shift
-        for ferry in "$@"; do
+    case $action in
+        install|uninstall|config)
+            ferry=$2
             ferry_data="$(secure_curl "$ROOT_URL/ferries/$ferry")"
 
             create_object $ferry "$abstract_ferry"
             create_object $ferry "$ferry_data"
 
             ${ferry}_${action}
+            [ $? -eq 0 ] && msg -i "$action successful" \
+                         || msg -e "$action unsuccessful"
 
-            case $? in
-                0)
-                    msg -i "$action succeeded"
-                    ;;
-                *)
-                    msg -e "$action unsuccessful"
-                    ;;
-            esac
-        done
-    ;;
-    --help|-h)
-        secure_curl "$ROOT_URL/usage"
-    ;;
-    *)
-        msg -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
-    ;;
-esac
+            shift; [ -z $@ ] || main $action $@
+        ;;
+        --help|-h)
+            secure_curl "$ROOT_URL/usage"
+        ;;
+        *)
+            msg -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
+        ;;
+    esac
+}
+
+main $@
 
