@@ -54,7 +54,7 @@ main() {
 
     case $action in
         install|uninstall|config)
-            ferry=$2
+            ferry=$2; shift 2
             ferry_data="$(secure_curl "$ROOT_URL/ferries/$ferry")"
 
             create_object $ferry "$abstract_ferry"
@@ -64,7 +64,7 @@ main() {
             [ $? -eq 0 ] && msg -i "$action successful" \
                          || msg -e "$action unsuccessful"
 
-            shift 2; [ -z $@ ] || main $action $@
+            [ -z $@ ] || main $action $@
         ;;
         --help|-h)
             secure_curl "$ROOT_URL/usage"
