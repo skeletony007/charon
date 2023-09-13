@@ -1,22 +1,35 @@
 #!/bin/bash
 
 msg() {
+    local prefix
     local message
+    local redirect
 
     case $1 in
         -e|--error)
+            prefix="${RED}ERROR${NC}  "
             message="$2"
-            echo -e "${RED}ERROR${NC}  $message" >&2
+            redirect=">&2"
+
+            shift 2
             ;;
-        -i|--info)
+        -i|--info)A
+            prefix="${GREEN}INFO${NC}   "
             message="$2"
-            echo -e "${GREEN}INFO${NC}   $message"
+
+            shift 2
             ;;
         *)
             message="$1"
-            echo -e "$message"
+
+            shift
             ;;
     esac
+    
+    local tail="$@"
+    [ -z $tail ] && msg $tail
+
+    echo -e "${prefix}${message}" $redirect
 }
 
 secure_curl() {
