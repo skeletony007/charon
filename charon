@@ -27,7 +27,7 @@ msg() {
     esac
 
     local tail="$@"
-    echo -e "${prefix}${message}" $redirect
+    eval "echo -e \"${prefix}${message}\" $redirect"
     [ -z "$tail" ] || msg $tail
 }
 
