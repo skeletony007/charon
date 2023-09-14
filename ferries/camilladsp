@@ -1,6 +1,38 @@
 #!/bin/bash
 
 {obj}_init() {
-    create_object ${obj} "$cli_tool_data"
+    create_object ${obj} "$gh_wrapper_data" "HEnquist" "camilladsp"
+    create_object ${obj} "$cli_tool_data" camillasdp
+
+    ${obj}_BIN_DIR="$HOME/.camilladsp/bin"
+}
+
+
+${obj}_install() {
+    local BIN_DIR="${${obj}_BIN_DIR}"
+
+    mkdir -p $BIN_DIR
+    PATH="$BIN_DIR:$PATH"
+
+    if camilladsp_is_latest; then
+        echo "Already up-to-date"
+    else
+        echo "Installing CamillaDSP..."
+    
+        case "$(uname -s)" in
+            "Darwin")
+                release="camilladsp-macos-aarch64.tar.gz"
+                ;;
+            *)
+                echo "Unsupported operating system"
+                ;;
+        esac
+    
+        camilladsp_download_asset "$release" - | tar -zxvf - -C "$BIN_DIR"
+        
+        echo "Installation complete"
+    fi
+
+    add_to_path "$BIN_DIR"
 }
 
