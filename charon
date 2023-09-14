@@ -54,13 +54,13 @@ create_object charon "$gh_wrapper_data" "skeletony007" "charon"
 charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
 punts="$(charon_get_api_data "name" "$charon_api_url/punts")"
 for punt in $punts; do
-    variable="${punt//-/_}_data"
+    variable=${punt//-/_}_data
     if [ -z $variable ]; then
         data_url="$( \
             charon_get_api_data "download_url" "$charon_api_url/punts/$punt" \
         )"
 
-        declare "$variable=$(secure_curl "$data_url")"
+        declare $variable="$(secure_curl "$data_url")"
     fi
 done
 
