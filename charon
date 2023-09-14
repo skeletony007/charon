@@ -64,6 +64,8 @@ for punt in $punts; do
     fi
 done
 
+echo "$abstract_ferry_data"
+
 main() {
     action=$1
 
