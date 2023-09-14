@@ -58,7 +58,7 @@ for punt in $punts; do
     data_url="$(charon_get_api_data "download_url" "$charon_api_url/punts/$punt")"
     data="$(secure_curl "$data_url")"
     variable="${punt//-/_}_data"
-    variable="$data"
+    "$variable"="$data"
 done
 
 main() {
