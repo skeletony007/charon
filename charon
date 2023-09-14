@@ -42,19 +42,22 @@ eval_curl() {
 }
 
 
-CHARON_ROOT="https://raw.githubusercontent.com/skeletony007/charon/main"
-BASH_UTILS_ROOT="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
-DOTFILES_ROOT="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
+charon_raw_url="https://raw.githubusercontent.com/skeletony007/charon/main"
+bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+dotfiles_raw_url="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
 
-eval_curl "$CHARON_ROOT/colors" "$BASH_UTILS_ROOT/object/object"
+eval_curl "$charon_raw_url/colors" "$bash_utils_raw_url/object/object"
 
-gh_wrapper_data="$(secure_curl "$CHARON_ROOT/punts/gh-wrapper")"
+gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
 
 create_object charon "$gh_wrapper_data" "skeletony007" "charon"
 
-charon_get_api_data "name" "https://api.github.com/repositories/687117389/contents/punts"
-
-abstract_ferry="$(secure_curl "$CHARON_ROOT/punts/abstract-ferry")"
+charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
+punts="$(charon_get_api_data "name" "$charon_api_url/punts")"
+for punt in $punts; do
+    data_url="$(charon_get_api_data "download_url" "$charon_api_url/punts/$punt")"
+    ${punt//_/-}_data="$(secure_curl "$data_url")"
+done
 
 main() {
     action=$1
@@ -62,9 +65,9 @@ main() {
     case $action in
         install|uninstall|config)
             ferry=$2; shift 2
-            ferry_data="$(secure_curl "$CHARON_ROOT/ferries/$ferry")"
+            ferry_data="$(secure_curl "$charon_raw_url/ferries/$ferry")"
 
-            create_object $ferry "$abstract_ferry"
+            create_object $ferry "$abstract_ferry_data"
             create_object $ferry "$ferry_data"
 
             ${ferry}_${action}
@@ -74,7 +77,7 @@ main() {
             [ -z $@ ] || main $action $@
         ;;
         --help|-h)
-            secure_curl "$ROOT_URL/usage"
+            secure_curl "$charon_raw_url/usage"
         ;;
         *)
             msg -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
