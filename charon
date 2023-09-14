@@ -51,12 +51,13 @@ eval_curl "$charon_raw_url/colors" "$bash_utils_raw_url/object/object"
 gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
 
 create_object charon "$gh_wrapper_data" "skeletony007" "charon"
-
 charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
 punts="$(charon_get_api_data "name" "$charon_api_url/punts")"
 for punt in $punts; do
     data_url="$(charon_get_api_data "download_url" "$charon_api_url/punts/$punt")"
-    declare "${punt//-/_}_data=$(secure_curl "$data_url")"
+
+    variable="${punt//-/_}_data"; value="$(secure_curl "$data_url")"
+    [ -z $variable ] && declare "$variable=$value"
 done
 
 main() {
