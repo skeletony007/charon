@@ -54,14 +54,12 @@ create_object charon "$gh_wrapper_data" "skeletony007" "charon"
 charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
 punts="$(charon_get_api_data "name" "$charon_api_url/punts")"
 for punt in $punts; do
-        data_url="$( \
-            charon_get_api_data "download_url" "$charon_api_url/punts/$punt" \
-        )"
+    data_url="$( \
+        charon_get_api_data "download_url" "$charon_api_url/punts/$punt" \
+    )"
 
-        eval "${punt//-/_}_data=\"$(secure_curl "$data_url")\""
+    declare ${punt//-/_}_data="$(secure_curl "$data_url")"
 done
-
-echo "$abstract_ferry_data"
 
 main() {
     action=$1
