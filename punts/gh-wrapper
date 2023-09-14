@@ -31,14 +31,14 @@ ${obj}_get_api_data() {
     local value="$1"
     local URL="$2"
 
+    [ -z ${${obj}_token} ] || local auth="Authorization: Bearer ${${obj}_token}"
     local version="2022-11-28"
-    local token_header="--header \"Authorization: Bearer ${${obj}_token}\""
 
     local temp_data="$( \
         curl -s \
              --request GET \
              --url "$URL" \
-             $token_header \
+             --header "$auth" \
              --header "X-GitHub-Api-Version: $version" \
         | grep -oE "\"$value\": \"[^\"]*" \
     )"
