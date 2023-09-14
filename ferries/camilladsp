@@ -4,7 +4,7 @@
     create_object ${obj} "$gh_wrapper_data" "HEnquist" "camilladsp"
     create_object ${obj} "$cli_tool_data" camillasdp
 
-    ${obj}_BIN_DIR="$HOME/.camilladsp/bin"
+    declare ${obj}_BIN_DIR="$HOME/.camilladsp/bin"
 }
 
 
