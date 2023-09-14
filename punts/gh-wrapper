@@ -4,7 +4,7 @@ ${obj}_init() {
     ${obj}_user="$1"
     ${obj}_repo="$2"
 
-    ${obj}_token=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
+    ${obj}_token=""
 
 ##    if [[ ! "${${obj}_user}" =~ ^[[:alnum:]]+$ ]]; then
 ##        echo "Error: Invalid username input. Usernames must be alphanumeric." >&2
