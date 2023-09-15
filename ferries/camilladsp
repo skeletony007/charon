@@ -14,23 +14,27 @@ ${obj}_install() {
     mkdir -p "$BIN_DIR"
     local PATH="$BIN_DIR:$PATH"
 
-    [ ${obj}_is_latest ] && msg -i "Already up to date."; return
-    
-    msg -i "Installing CamillaDSP..."
-    
-    case "$(uname -s)" in
-        "Darwin")
-            local release="camilladsp-macos-aarch64.tar.gz"
-            ;;
-        *)
-            echo "Unsupported operating system."
-            ;;
-    esac
-    
-    ${obj}_download_asset "$release" - | tar -zxvf - -C "$BIN_DIR"
-    [ $? -eq 0 ] && msg -i "Installation complete." \
-                 || msg -e "Installation failed."; return 1
+    if ${obj}_is_latest; then
+        msg "Already up to date."
+    else
+        case "$(uname -s)" in
+            "Darwin")
+                local release="camilladsp-macos-aarch64.tar.gz"
+                ;;
+            *)
+                msg -e "Unsupported operating system."
+                ;;
+        esac
+
+        ${obj}_download_asset "$release" - | tar -zxvf - -C "$BIN_DIR"
+        [ $? -eq 0 ] || return 1
+    fi
 
     add_to_path "$BIN_DIR"
+}
+
+${obj}_uninstall() {
+    rm "$BIN_DIR/camilladsp"
+    remove_from_path "$BIN_DIR"
 }
 
