@@ -22,7 +22,7 @@ ${obj}_install() {
                 local release="camilladsp-macos-aarch64.tar.gz"
                 ;;
             *)
-                msg -e "Unsupported operating system."
+                msg -e "Unsupported operating system."; return 1
                 ;;
         esac
 
