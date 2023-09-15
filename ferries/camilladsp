@@ -2,7 +2,7 @@
 
 ${obj}_init() {
     create_object ${obj} "$gh_wrapper_data" "HEnquist" "camilladsp"
-    create_object ${obj} "$cli_tool_data" camillasdp
+    create_object ${obj} "$cli_program_data" camillasdp
 
     ${obj}_BIN_DIR="$HOME/.camilladsp/bin"
 }
