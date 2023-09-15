@@ -14,24 +14,22 @@ ${obj}_install() {
     mkdir -p "$BIN_DIR"
     local PATH="$BIN_DIR:$PATH"
 
-    if ${obj}_is_latest; then
-        echo "Already up-to-date"
-    else
-        echo "Installing CamillaDSP..."
+    [ ${obj}_is_latest ] && msg -i "Already up to date."; return
     
-        case "$(uname -s)" in
-            "Darwin")
-                local release="camilladsp-macos-aarch64.tar.gz"
-                ;;
-            *)
-                echo "Unsupported operating system"
-                ;;
-        esac
+    msg -i "Installing CamillaDSP..."
     
-        ${obj}_download_asset "$release" - | tar -zxvf - -C "$BIN_DIR"
-        
-        echo "Installation complete"
-    fi
+    case "$(uname -s)" in
+        "Darwin")
+            local release="camilladsp-macos-aarch64.tar.gz"
+            ;;
+        *)
+            echo "Unsupported operating system."
+            ;;
+    esac
+    
+    ${obj}_download_asset "$release" - | tar -zxvf - -C "$BIN_DIR"
+    [ $? -eq 0 ] && msg -i "Installation complete." \
+                 || msg -e "Installation failed."; return 1
 
     add_to_path "$BIN_DIR"
 }
