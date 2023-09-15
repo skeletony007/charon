@@ -4,7 +4,7 @@ ${obj}_init() {
     ${obj}_user="$1"
     ${obj}_repo="$2"
 
-    ${obj}_token=""
+    ${obj}_token="$(<"$HOME/.gh-wrapper/token")"
 
 ##    if [[ ! "${${obj}_user}" =~ ^[[:alnum:]]+$ ]]; then
 ##        echo "Error: Invalid username input. Usernames must be alphanumeric." >&2
