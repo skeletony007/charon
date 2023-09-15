@@ -34,6 +34,8 @@ ${obj}_install() {
 }
 
 ${obj}_uninstall() {
+    local BIN_DIR="${${obj}_BIN_DIR}"
+
     rm "$BIN_DIR/camilladsp"
     remove_from_path "$BIN_DIR"
 }
