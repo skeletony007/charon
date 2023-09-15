@@ -11,10 +11,10 @@
 ${obj}_install() {
     local BIN_DIR="${${obj}_BIN_DIR}"
 
-    mkdir -p $BIN_DIR
+    mkdir -p "$BIN_DIR"
     local PATH="$BIN_DIR:$PATH"
 
-    if camilladsp_is_latest; then
+    if ${obj}_is_latest; then
         echo "Already up-to-date"
     else
         echo "Installing CamillaDSP..."
@@ -28,7 +28,7 @@ ${obj}_install() {
                 ;;
         esac
     
-        camilladsp_download_asset "$release" - | tar -zxvf - -C "$BIN_DIR"
+        ${obj}_download_asset "$release" - | tar -zxvf - -C "$BIN_DIR"
         
         echo "Installation complete"
     fi
