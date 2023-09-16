@@ -15,53 +15,42 @@ msg() {
             ;;
     esac
 
-    eval "echo -e \"${prefix}${message}\" $redirect"; [ -z "$@" ] || msg $@
+    eval "echo -e \"${prefix}${message}\" $redirect"; [[ -z $@ ]] || msg $@
 }
 
 secure_curl() {
-    local URL="$1"
+    local url="$1"
     local exit_status=0
 
-    curl --proto '=https' -sSf "$URL"
-    [ $? -eq 0 ] || msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"; \
+    curl --proto '=https' -sSf "$url"
+    [ $? -eq 0 ] || msg -e "Failed to transfer data from ${YELLOW}$url${NC}"; \
                     exit_status=1
 
     shift && [[ -z $@ ]] && return $exit_status || secure_curl $@
 }
 
 eval_curl() {
-    local URL="$1"
+    local url="$1"
     local exit_status=0
 
-    local data="$(secure_curl "$URL")"
+    local data="$(secure_curl "$url")"
     eval "$data"
-    [ $? -eq 0 ] || msg -e "Failed to evaluate data from ${YELLOW}$URL${NC}"; \
+    [ $? -eq 0 ] || msg -e "Failed to evaluate data from ${YELLOW}$url${NC}"; \
                     exit_status=1
 
     shift && [[ -z $@ ]] && return $exit_status || eval_curl $@
 }
 
+punt() {
+    local url="$1"
 
-charon_raw_url="https://raw.githubusercontent.com/skeletony007/charon/main"
-bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
-dotfiles_raw_url="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
+    local variable=${$(basename "$url")//-/_}_data
+    local value="$(secure_curl "$url")"
 
-eval_curl "$charon_raw_url/colors" \
-          "$bash_utils_raw_url/object/object" \
-          "$bash_utils_raw_url/shell-functions/shell-functions"
+    [ -z $punt_name ] && declare $variable="$value"
 
-gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
-
-create_object charon "$gh_wrapper_data" "skeletony007" "charon"
-charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
-punts="$(charon_get_api_data "name" "$charon_api_url/punts")"
-for punt in $punts; do
-    data_url="$( \
-        charon_get_api_data "download_url" "$charon_api_url/punts/$punt" \
-    )"
-
-    declare ${punt//-/_}_data="$(secure_curl "$data_url")"
-done
+    [[ -z $@ ]] || punt $@
+}
 
 main() {
     action=$1
@@ -78,7 +67,7 @@ main() {
             [ $? -eq 0 ] && msg -i "$action successful" \
                          || msg -e "$action unsuccessful"
 
-            [ -z $@ ] || main $action $@
+            [[ -z $@ ]] || main $action $@
         ;;
         --help|-h)
             secure_curl "$charon_raw_url/usage"
@@ -88,6 +77,20 @@ main() {
         ;;
     esac
 }
+
+charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
+charon_raw_url="https://raw.githubusercontent.com/skeletony007/charon/main"
+bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+dotfiles_raw_url="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
+
+gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
+create_object charon "$gh_wrapper_data" skeletony007 charon
+
+eval_curl "$charon_raw_url/colors" \
+          "$bash_utils_raw_url/object/object" \
+          "$bash_utils_raw_url/shell-functions/shell-functions"
+
+punt "$(charon_get_api_data download_url "$charon_api_url/punts")"
 
 main $@
 
