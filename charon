@@ -22,10 +22,9 @@ secure_curl() {
     local URL="$1"
     local exit_status=0
 
-    if ! curl --proto '=https' -sSf "$URL"; then
-        msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"
-        exit_status=1
-    fi
+    curl --proto '=https' -sSf "$URL"
+    [ $? -eq 0 ] || msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"; \
+                    exit_status=1
 
     shift && [ -z $@ ] && return $exit_status || secure_curl $@
 }
@@ -33,13 +32,11 @@ secure_curl() {
 eval_curl() {
     local URL="$1"
     local exit_status=0
-    echo $URL
 
     local data="$(secure_curl "$URL")"
-    if ! eval "$data"; then
-        msg -e "Failed to evaluate data from ${YELLOW}$URL${NC}"
-        exit_status=1
-    fi
+    eval "$data"
+    [ $? -eq 0 ] || msg -e "Failed to evaluate data from ${YELLOW}$URL${NC}"; \
+                    exit_status=1
 
     shift && [ -z $@ ] && return $exit_status || eval_curl $@
 }
