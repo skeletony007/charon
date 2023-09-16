@@ -41,14 +41,14 @@ eval_curl() {
     shift && [[ -z $@ ]] && return $exit_status || eval_curl $@
 }
 
+_kebab_to_snake_case() {
+    echo ${1//-/_}
+}
+
 punt() {
     local url="$1"
 
-    local kebab_to_snake_case() {
-        echo ${1//-/_}
-    }
-
-    local variable=$(basename "$url" | kebab_to_snake_case)_data
+    local variable=$(basename "$url" | _kebab_to_snake_case)_data
     local value="$(secure_curl "$url")"
 
     [ -z $punt_name ] && declare $variable="$value"
