@@ -26,7 +26,7 @@ secure_curl() {
     [ $? -eq 0 ] || msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"; \
                     exit_status=1
 
-    shift && [ -z $@ ] && return $exit_status || secure_curl $@
+    shift && [ -z "$@" ] && return $exit_status || secure_curl $@
 }
 
 eval_curl() {
@@ -38,7 +38,7 @@ eval_curl() {
     [ $? -eq 0 ] || msg -e "Failed to evaluate data from ${YELLOW}$URL${NC}"; \
                     exit_status=1
 
-    shift && [ -z $@ ] && return $exit_status || eval_curl $@
+    shift && [ -z "$@" ] && return $exit_status || eval_curl $@
 }
 
 
