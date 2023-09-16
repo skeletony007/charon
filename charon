@@ -43,7 +43,7 @@ eval_curl() {
 
 punt() {
     local url="$1"
-    local variable=${(basename "$url")//-/_}_data
+    local variable=$(basename "${url//-/_}_data")
     local value="$(secure_curl "$url")"
 
     [ -z $punt_name ] && declare $variable="$value"
