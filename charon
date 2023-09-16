@@ -20,25 +20,27 @@ msg() {
 
 secure_curl() {
     local URL="$1"
+    local exit_status=0
 
     if ! curl --proto '=https' -sSf "$URL"; then
         msg -e "Failed to transfer data from ${YELLOW}$URL${NC}"
-        return 1
+        exit_status=1
     fi
 
-    shift && [ -z $@ ] || secure_curl $@
+    shift && [ -z $@ ] && return $exit_status || secure_curl $@
 }
 
 eval_curl() {
     local URL="$1"
+    local exit_status=0
 
     local data="$(secure_curl "$URL")"
     if ! eval "$data"; then
         msg -e "Failed to evaluate data from ${YELLOW}$URL${NC}"
-        return 1
+        exit_status=1
     fi
 
-    shift && [ -z $@ ] || eval_curl $@
+    shift && [ -z $@ ] && return $exit_status || eval_curl $@
 }
 
 
@@ -46,9 +48,9 @@ charon_raw_url="https://raw.githubusercontent.com/skeletony007/charon/main"
 bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
 dotfiles_raw_url="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
 
-eval_curl "$charon_raw_url/colors"
-eval_curl "$bash_utils_raw_url/object/object"
-eval_curl "$bash_utils_raw_url/shell-functions/shell-functions"
+eval_curl "$charon_raw_url/colors" \
+          "$bash_utils_raw_url/object/object" \
+          "$bash_utils_raw_url/shell-functions/shell-functions"
 
 gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
 
