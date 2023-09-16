@@ -33,6 +33,7 @@ secure_curl() {
 eval_curl() {
     local URL="$1"
     local exit_status=0
+    echo $URL
 
     local data="$(secure_curl "$URL")"
     if ! eval "$data"; then
