@@ -48,7 +48,7 @@ _kebab_to_snake_case() {
 punt() {
     local url="$1"
 
-    local variable=$(basename "$url" | _kebab_to_snake_case)_data
+    local variable=$(_kebab_to_snake_case $(basename "$url"))_data
     local value="$(secure_curl "$url")"
 
     [ -z $punt_name ] && declare $variable="$value"
