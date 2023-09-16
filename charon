@@ -48,7 +48,7 @@ punt() {
     local variable=${file//-/_}_data
     local value="$(secure_curl "$url")"
 
-    [ -z $punt_name ] && declare $variable="$value"
+    [ -z $variable ] && declare $variable="$value" && echo "$variable=\"$value\""
 
     shift && [[ -z $@ ]] || punt $@
 }
@@ -65,8 +65,8 @@ main() {
             create_object $ferry "$ferry_data"
 
             ${ferry}_${action}
-            [ $? -eq 0 ] && msg -i "$action successful" \
-                         || msg -e "$action unsuccessful"
+            [ $? -eq 0 ] && msg "$action successful." \
+                         || msg "$action unsuccessful."
 
             [[ -z $@ ]] || main $action $@
         ;;
@@ -74,7 +74,7 @@ main() {
             secure_curl "$charon_raw_url/usage"
         ;;
         *)
-            msg -e "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
+            msg "Invalid command or missing arguments. Use ${YELLOW}charon --help${NC} for usage instructions."
         ;;
     esac
 }
