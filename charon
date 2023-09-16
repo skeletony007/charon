@@ -47,8 +47,7 @@ punt() {
     local file=$(basename "$url")
     local variable=${file//-/_}_data
     
-    [[ -z $variable ]] && local value="$(secure_curl "$url")" \
-                       && declare $variable="$value"
+    [ -v $variable ] || declare $variable="$(secure_curl "$url")"
 
     shift && [[ -z $@ ]] || punt $@
 }
