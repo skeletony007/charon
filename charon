@@ -47,7 +47,7 @@ bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/ma
 dotfiles_raw_url="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
 
 eval_curl "$charon_raw_url/colors"
-eval_curl"$bash_utils_raw_url/object/object"
+eval_curl "$bash_utils_raw_url/object/object"
 eval_curl "$bash_utils_raw_url/shell-functions/shell-functions"
 
 gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
