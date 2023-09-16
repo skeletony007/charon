@@ -50,7 +50,7 @@ punt() {
 
     [ -z $punt_name ] && declare $variable="$value"
 
-    [[ -z $@ ]] || punt $@
+    shift && [[ -z $@ ]] || punt $@
 }
 
 main() {
