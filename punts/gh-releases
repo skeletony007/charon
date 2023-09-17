@@ -68,12 +68,14 @@ ${obj}_is_latest() {
 }
 
 ${obj}_download_asset() {
+    ## Needs major overhaul.
+
     local asset_name="$1"
     local output="$2"
 
     local browser_download_url="$(${obj}_get_download_url "$asset_name")"
 
-    curl -L --progress-bar -o "$output" "$browser_download_url"
+    curl -L -o "$output" "$browser_download_url"
 }
 
 ${obj}_release_menu() {
