@@ -5,27 +5,25 @@ ${obj}_init() {
     create_object ${obj} "$cli_program_data" camilladsp
 
     ${obj}_BIN_DIR="$HOME/.camilladsp/bin"
-}
 
+    case "$(uname -s)" in
+        "Darwin")
+            local release="camilladsp-macos-aarch64.tar.gz"
+            ;;
+        *)
+            msg -e "Unsupported operating system."; return 1
+            ;;
+    esac
+}
 
 ${obj}_install() {
     local BIN_DIR="${${obj}_BIN_DIR}"
 
-    mkdir -p "$BIN_DIR"
-    local PATH="$BIN_DIR:$PATH"
+    mkdir -p "$BIN_DIR" && local PATH="$BIN_DIR:$PATH"
 
     if ${obj}_is_latest; then
         msg "Already up to date."
     else
-        case "$(uname -s)" in
-            "Darwin")
-                local release="camilladsp-macos-aarch64.tar.gz"
-                ;;
-            *)
-                msg -e "Unsupported operating system."; return 1
-                ;;
-        esac
-
         ${obj}_download_asset "$release" - | tar -zxvf - -C "$BIN_DIR"
         [ $? -eq 0 ] || return 1
     fi
