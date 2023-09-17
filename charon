@@ -88,7 +88,7 @@ eval_curl "$charon_raw_url/colors" \
           "$bash_utils_raw_url/shell-functions/shell-functions"
 
 gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
-create_object charon "$gh_wrapper_data" skeletony007 charon
+create_object charon "$gh_wrapper_data"
 
 punt $(charon_get_api_data download_url "$charon_api_url/punts")
 

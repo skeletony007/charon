@@ -73,7 +73,7 @@ ${obj}_download_asset() {
 
     local browser_download_url="$(${obj}_get_download_url "$asset_name")"
 
-    curl -L -o "$output" "$browser_download_url"
+    curl -L -o "$output" "$browser_download_url" --progress-bar
 }
 
 ${obj}_release_menu() {
