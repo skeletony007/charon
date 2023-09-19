@@ -10,7 +10,7 @@ ${obj}_init() {
     case "$(uname -s)" in
         "Darwin")
             ${obj}_preferences[asset]="camilladsp-macos-aarch64.tar.gz"
-            echo ${obj}_preferences[asset]
+            echo "${${obj}_preferences[asset]}"
             ;;
         *)
             msg -e "Unsupported operating system."; return 1
