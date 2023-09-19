@@ -78,7 +78,7 @@ ${obj}_download_asset() {
     local url_pattern="https://github.com/%s/%s/releases/latest/download/$asset_name"
     local url="$(printf "$url_pattern" "${${obj}_user}" "${${obj}_repo}")"
 
-    curl -L -o "$output" "$url"
+    curl -# -L -o "$output" "$url"
 }
 
 ${obj}_release_menu() {
