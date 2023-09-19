@@ -52,7 +52,7 @@ ${obj}_get_remote_version() {
             ${obj}__fill_url "https://api.github.com/repos/%s/%s/releases/latest" \
         )"
 
-        $${obj}_remote_version=$({obj}_get_api_data tag_name "$url")
+        $${obj}_remote_version="$(${obj}_get_api_data tag_name "$url")"
     fi
 
     echo "${${obj}_remote_version}"
