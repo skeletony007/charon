@@ -15,27 +15,17 @@ ${obj}_init() {
         msg -e "Invalid repository input. Repository names must be alphanumeric."
         return 1
     fi
-
-    local url_pattern="https://api.github.com/repos/%s/%s/releases/latest"
-
-    ${obj}_url="$(printf "$url_pattern" "${${obj}_user}" "${${obj}_repo}")"
 }
 
 ${obj}_get_download_urls() {
     [[ -z ${${obj}_download_urls} ]] && ${obj}_download_urls="$( \
-        ${obj}_get_api_data browser_download_url "${${obj}_url}" \
+        local url_pattern="https://api.github.com/repos/%s/%s/releases/latest"
+        local url="$(printf "$url_pattern" "${${obj}_user}" "${${obj}_repo}")"
+
+        ${obj}_get_api_data browser_download_url "$url" \
     )"
 
     echo "${${obj}_download_urls}"
-}
-
-${obj}_get_download_url() {
-    local asset_name="$1"
-
-    local browser_download_urls="$(${obj}_get_download_urls)"
-    local browser_download_url="$(echo "$browser_download_urls" | grep -E "/$asset_name$")"
-
-    echo "$browser_download_url"
 }
 
 ${obj}_get_asset_names() {
@@ -68,23 +58,23 @@ ${obj}_is_latest() {
 }
 
 ${obj}_download_asset() {
-    ## Needs major overhaul.
-
-    local asset_name="$1"
+    local asset="$1"
     local output="$2"
 
-    local browser_download_url="$(${obj}_get_download_url "$asset_name")"
+    local url_pattern="https://github.com/%s/%s/releases/latest/download/$asset"
+    local url="$(printf "$url_pattern" "${${obj}_user}" "${${obj}_repo}")"
 
-    curl -L -o "$output" "$browser_download_url"
+    curl -L -o "$output" "$url"
 }
 
 ${obj}_release_menu() {
+    local os_name
     case "$(uname -s)" in
         "Darwin")
-            local os_name="macos"
+            os_name="macos"
             ;;
         "Linux")
-            local os_name="linux"
+            os_name="linux"
             ;;
         *)
             echo "Unsupported operating system"
