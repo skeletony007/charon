@@ -17,13 +17,23 @@ ${obj}_init() {
     fi
 }
 
-${obj}_get_download_urls() {
-    [[ -z ${${obj}_download_urls} ]] && ${obj}_download_urls="$( \
-        local url_pattern="https://api.github.com/repos/%s/%s/releases/latest"
-        local url="$(printf "$url_pattern" "${${obj}_user}" "${${obj}_repo}")"
+${obj}__fill_url() {
+    local url_pattern="$1"
 
-        ${obj}_get_api_data browser_download_url "$url" \
-    )"
+    local user="${${obj}_user}"
+    local repo="${${obj}_repo}"
+
+    echo "$(printf "$url_pattern" "${${obj}_user}" "${${obj}_repo}")"
+}
+
+${obj}_get_download_urls() {
+    if [[ -z ${${obj}_download_urls} ]]; then
+        local url="$( \
+            ${obj}__fill_url "https://api.github.com/repos/%s/%s/releases/latest" \
+        )"
+
+        ${obj}_download_urls="$(${obj}_get_api_data browser_download_url "$url")"
+    fi
 
     echo "${${obj}_download_urls}"
 }
@@ -37,9 +47,13 @@ ${obj}_get_asset_names() {
 }
 
 ${obj}_get_remote_version() {
-    [[ -z "${${obj}_remote_version}" ]] && ${obj}_remote_version="$( \
-        ${obj}_get_api_data tag_name "${${obj}_url}" \
-    )"
+    if [[ -z "${${obj}_remote_version}" ]]; then
+        local url="$( \
+            ${obj}__fill_url "https://api.github.com/repos/%s/%s/releases/latest" \
+        )"
+
+        $${obj}_remote_version=$({obj}_get_api_data tag_name "$url")
+    fi
 
     echo "${${obj}_remote_version}"
 }
