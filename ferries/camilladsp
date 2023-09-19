@@ -6,10 +6,10 @@ ${obj}_init() {
 
     ${obj}_BIN_DIR="$HOME/.camilladsp/bin"
 
-    local asset
+    declare -A ${obj}_preferences
     case "$(uname -s)" in
         "Darwin")
-            asset="camilladsp-macos-aarch64.tar.gz"
+            ${obj}_preferences[asset]="camilladsp-macos-aarch64.tar.gz"
             ;;
         *)
             msg -e "Unsupported operating system."; return 1
@@ -25,7 +25,8 @@ ${obj}_install() {
         msg "Already up to date."
     else
         mkdir -p "$BIN_DIR" 
-        ${obj}_download_asset "$asset" - | tar -zxvf - -C "$BIN_DIR"
+        ${obj}_download_asset "${${obj}_preferences[asset]}" - \
+        | tar -zxvf - -C "$BIN_DIR"
         [ $? -eq 0 ] || return 1
     fi
     
