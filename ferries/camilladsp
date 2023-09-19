@@ -24,11 +24,12 @@ ${obj}_install() {
     if ${obj}_is_latest; then
         msg "Already up to date."
     else
+        mkdir -p "$BIN_DIR" 
         ${obj}_download_asset "$asset" - | tar -zxvf - -C "$BIN_DIR"
         [ $? -eq 0 ] || return 1
     fi
     
-    mkdir -p "$BIN_DIR" && add_to_path "$BIN_DIR"
+    add_to_path "$BIN_DIR"
 }
 
 ${obj}_uninstall() {
