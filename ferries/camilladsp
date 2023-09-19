@@ -18,7 +18,7 @@ ${obj}_init() {
 
 ${obj}_install() {
     local BIN_DIR="${${obj}_BIN_DIR}"
-    local PATH="$BIN_DIR:$PATH"
+    PATH="$BIN_DIR:$PATH"
 
     if ${obj}_is_latest; then
         msg "Already up to date."
