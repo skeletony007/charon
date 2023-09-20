@@ -37,15 +37,19 @@ parse() {
 
     case $command in
         install|uninstall|config)
+            local dock_dir="/usr/local/dock"; local dock_file="$dock_dir/$ferry"
+            mkdir -p "$dock_dir" && touch "$dock_file"
+            local dock_data="$(cat "$dock_file")"
             ferry=$2; shift 2
-            ferry_data="$(secure_curl "$charon_raw_url/ferries/$ferry")"
+            local ferry_data="$(secure_curl "$charon_raw_url/ferries/$ferry")"
 
             create_object $ferry "$abstract_ferry_data"
             create_object $ferry "$ferry_data"
+            create_object $ferry "$dock_data"
 
             ${ferry}_${command}
 
-            type ${ferry}_uninstall
+            type ${ferry}_uninstall | sed -n '2,$p' > "$dock_file"
 
             [[ -z $@ ]] || parse $command $@
         ;;
