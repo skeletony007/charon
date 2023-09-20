@@ -37,7 +37,7 @@ parse() {
 
     case $command in
         install|uninstall|config)
-            ferry=$2;
+            ferry=$2
 
             local dock_dir="$HOME/.charon"; mkdir -p "$dock_dir"
             local dock_file="$dock_dir/$ferry"; touch "$dock_file"
