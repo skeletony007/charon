@@ -45,6 +45,6 @@ msg() {
             ;;
     esac
 
-    eval "echo -e \"${prefix}${message}\" $redirect"; [[ -z $@ ]] || msg $@
+    eval "echo -e \"${prefix}${message}\" $redirect"
 }
 
