@@ -45,6 +45,8 @@ parse() {
 
             ${ferry}_${command}
 
+            type ${ferry}_uninstall
+
             [[ -z $@ ]] || parse $command $@
         ;;
         --help|-h)
