@@ -13,7 +13,7 @@ msg() {
         -w|--warning)
             prefix="${YELLOW}Warning:${NC} "; message="$2"; shift 2
             ;;
-        --unknown_command)
+        --unknown-command)
             local command=$2
             msg -e "Unknown command: $command"
             shift 2
