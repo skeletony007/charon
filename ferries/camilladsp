@@ -43,6 +43,7 @@ ${obj}_uninstall() {
 
     msg --uninstalling "$BIN_DIR/camilladsp"
     rm "$BIN_DIR/camilladsp"
+
     remove_from_path "$BIN_DIR"
 }
 
