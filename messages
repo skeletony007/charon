@@ -30,7 +30,7 @@ msg() {
             ;;
         --uninstalling)
             local path="$2"
-            local file_count=$(find $path -type f | wc -l)
+            local file_count=$(find $path -type f | wc -l | awk '{print $1}')
             local folder_size="$(du -hs "$path" | awk '{print $1}')B"
             msg "Uninstalling $path... ($file_count files, $folder_size)"
             shift 2
