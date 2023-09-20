@@ -53,7 +53,7 @@ main() {
             secure_curl "$charon_raw_url/usage"
         ;;
         *)
-            msg unknown-command "$action"
+            msg --unknown-command "$action"
         ;;
     esac
 }
