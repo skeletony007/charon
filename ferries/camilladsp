@@ -21,20 +21,27 @@ ${obj}_install() {
     PATH="$BIN_DIR:$PATH"
 
     if ${obj}_is_latest; then
-        msg "Already up to date."
+        msg --not-upgrading camilladsp
     else
-        mkdir -p "$BIN_DIR" 
-        ${obj}_download_asset "${${obj}_asset_name}" - \
+        msg --installing camilladsp
+
+        mkdir -p "$BIN_DIR"
+        local asset_name="${${obj}_asset_name}"
+
+        msg --downloading "$asset_name"
+
+        ${obj}_download_asset "$asset_name" - \
         | tar -zxvf - -C "$BIN_DIR"
         [ $? -eq 0 ] || return 1
     fi
-    
+
     add_to_path "$BIN_DIR"
 }
 
 ${obj}_uninstall() {
     local BIN_DIR="${${obj}_BIN_DIR}"
 
+    msg --uninstalling "$BIN_DIR/camilladsp"
     rm "$BIN_DIR/camilladsp"
     remove_from_path "$BIN_DIR"
 }
