@@ -37,10 +37,11 @@ parse() {
 
     case $command in
         install|uninstall|config)
-            local dock_dir="$HOME/.charon"; local dock_file="$dock_dir/$ferry"
-            mkdir -p "$dock_dir" && touch "$dock_file"
+            ferry=$2;
+
+            local dock_dir="$HOME/.charon"; mkdir -p "$dock_dir"
+            local dock_file="$dock_dir/$ferry"; touch "$dock_file"
             local dock_data="$(cat "$dock_file")"
-            ferry=$2; shift 2
             local ferry_data="$(secure_curl "$charon_raw_url/ferries/$ferry")"
 
             create_object $ferry "$abstract_ferry_data"
@@ -51,7 +52,7 @@ parse() {
 
             type ${ferry}_uninstall | sed -n '2,$p' > "$dock_file"
 
-            [[ -z $@ ]] || parse $command $@
+            [[ -z $@ ]] || shift 2 && parse $command $@
         ;;
         --help|-h)
             secure_curl "$charon_raw_url/usage"
