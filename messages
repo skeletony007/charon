@@ -5,43 +5,38 @@ msg() {
 
     case $1 in
         -e|--error)
-            prefix="${RED}Error:${NC} "; message="$2"; redirect=">&2"; shift 2
+            prefix="${RED}Error:${NC} "; message="$2"; redirect=">&2"
             ;;
         -i|--info)
-            prefix="${BLUE}==>${NC} "; message="$2"; shift 2
+            prefix="${BLUE}==>${NC} "; message="$2"
             ;;
         -w|--warning)
-            prefix="${YELLOW}Warning:${NC} "; message="$2"; shift 2
+            prefix="${YELLOW}Warning:${NC} "; message="$2"
             ;;
         --unknown-command)
             local command=$2
             msg -e "Unknown command: $command"
-            shift 2
             ;;
         --downloading)
             local file=$2
             msg -i "${BOLD}Downloading${NC} $file"
-            shift 2
             ;;
         --installing)
             local package_name=$2
             msg -i "${BOLD}Installing${NC} $package_name"
-            shift 2
             ;;
         --uninstalling)
             local path="$2"
             local file_count=$(find $path -type f | wc -l | awk '{print $1}')
             local folder_size="$(du -hs "$path" | awk '{print $1}')B"
             msg "Uninstalling $path... ($file_count files, $folder_size)"
-            shift 2
             ;;
         --not-upgrading)
             local program=$2
             msg -w "Not upgrading $program, the latest version is already installed"
-            shift 2
             ;;
         *)
-            message="$1"; shift
+            message="$1"
             ;;
     esac
 

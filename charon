@@ -7,7 +7,7 @@ secure_curl() {
     curl --proto '=https' -sSf "$url"
     [ $? -eq 0 ] || msg -e "Failed to transfer data from $url"; exit_status=1
 
-    shift && [[ -z $@ ]] && return $exit_status || secure_curl $@
+    shift && [[ -n $@ ]] && secure_curl $@ || return $exit_status
 }
 
 eval_curl() {
@@ -18,7 +18,7 @@ eval_curl() {
     eval "$data"
     [ $? -eq 0 ] || msg -e "Failed to evaluate data from $url"; exit_status=1
 
-    shift && [[ -z $@ ]] && return $exit_status || eval_curl $@
+    shift && [[ -n $@ ]] && eval_curl $@ || return $exit_status
 }
 
 punt() {
@@ -29,7 +29,7 @@ punt() {
 
     [[ -z ${!variable} ]] && eval "$variable=\"\$(secure_curl "$url")\""
 
-    shift && [[ -z $@ ]] || punt $@
+    shift && [[ -n $@ ]] && punt $@
 }
 
 parse() {
@@ -52,7 +52,7 @@ parse() {
 
             type ${ferry}_uninstall | sed -n '2,$p' > "$dock_file"
 
-            [[ -z $@ ]] || shift 2 && parse $command $@
+            shift 2 && [[ -n $@ ]] && parse $command $@
         ;;
         --help|-h)
             secure_curl "$charon_raw_url/usage"
