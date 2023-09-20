@@ -5,8 +5,7 @@ secure_curl() {
     local exit_status=0
 
     curl --proto '=https' -sSf "$url"
-    [ $? -eq 0 ] || msg -e "Failed to transfer data from ${YELLOW}$url${NC}"; \
-                    exit_status=1
+    [ $? -eq 0 ] || msg -e "Failed to transfer data from $url"; exit_status=1
 
     shift && [[ -z $@ ]] && return $exit_status || secure_curl $@
 }
@@ -17,8 +16,7 @@ eval_curl() {
 
     local data="$(secure_curl "$url")"
     eval "$data"
-    [ $? -eq 0 ] || msg -e "Failed to evaluate data from ${YELLOW}$url${NC}"; \
-                    exit_status=1
+    [ $? -eq 0 ] || msg -e "Failed to evaluate data from $url"; exit_status=1
 
     shift && [[ -z $@ ]] && return $exit_status || eval_curl $@
 }
@@ -27,17 +25,17 @@ punt() {
     local url="$1"
 
     local file=$(basename "$url")
-    local var=${file//-/_}_data
+    local variable=${file//-/_}_data
 
-    [[ -z ${!var} ]] && eval "$var=\"\$(secure_curl "$url")\""
+    [[ -z ${!variable} ]] && eval "$variable=\"\$(secure_curl "$url")\""
 
     shift && [[ -z $@ ]] || punt $@
 }
 
-main() {
-    action=$1
+parse() {
+    local command=$1
 
-    case $action in
+    case $command in
         install|uninstall|config)
             ferry=$2; shift 2
             ferry_data="$(secure_curl "$charon_raw_url/ferries/$ferry")"
@@ -45,33 +43,37 @@ main() {
             create_object $ferry "$abstract_ferry_data"
             create_object $ferry "$ferry_data"
 
-            ${ferry}_${action}
+            ${ferry}_${command}
 
-            [[ -z $@ ]] || main $action $@
+            [[ -z $@ ]] || parse $command $@
         ;;
         --help|-h)
             secure_curl "$charon_raw_url/usage"
         ;;
         *)
-            msg --unknown-command "$action"
+            msg --unknown-command "$command"
         ;;
     esac
 }
 
-charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
-charon_raw_url="https://raw.githubusercontent.com/skeletony007/charon/main"
-bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
-dotfiles_raw_url="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
+main() {
+    local charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
+    local charon_raw_url="https://raw.githubusercontent.com/skeletony007/charon/main"
+    local bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
+    local dotfiles_raw_url="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
 
-eval_curl "$charon_raw_url/colors" \
-          "$charon_raw_url/messages" \
-          "$bash_utils_raw_url/object/object" \
-          "$bash_utils_raw_url/shell-functions/shell-functions"
+    eval_curl "$charon_raw_url/colors" \
+              "$charon_raw_url/messages" \
+              "$bash_utils_raw_url/object/object" \
+              "$bash_utils_raw_url/shell-functions/shell-functions"
 
-gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
-create_object charon "$gh_wrapper_data"
+    local gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
+    create_object charon "$gh_wrapper_data"
 
-punt $(charon_get_api_data download_url "$charon_api_url/punts")
+    punt $(charon_get_api_data download_url "$charon_api_url/punts")
+
+    parse $@
+}
 
 main $@
 
