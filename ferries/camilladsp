@@ -32,7 +32,7 @@ ${obj}_install() {
 
         ${obj}_download_asset "$asset_name" - \
         | tar -zxvf - -C "$BIN_DIR"
-        [ $? -eq 0 ] || return 1
+        [ $? -ne 0 ] && return 1
     fi
 
     add_to_path "$BIN_DIR"

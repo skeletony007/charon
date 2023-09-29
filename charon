@@ -4,12 +4,15 @@ punt() {
     local url="$1"
 
     local file=$(basename "$url")
-    local variable=${file//-/_}_data
-
-    if [[ -z ${!variable} ]]; then
-        local value="$(curl --proto '=https' -sSf "$url")"
-        ${!variable}="$value"
-    fi
+    local variable=${file//-/_}_data; local value
+    
+    [[ -z ${!variable} ]] && {
+        if value="$(curl --proto '=https' -sSf "$url")"; then
+            eval "$variable=\"\$value\""
+        else
+            msg --error "Failed to transfer data from $url"
+        fi
+    }
 
     shift && [[ -n $@ ]] && punt $@
 }
@@ -24,8 +27,8 @@ parse() {
             local dock_dir="$HOME/.charon/dock"; mkdir -p "$dock_dir"
             local dock_file="$dock_dir/$ferry"; touch "$dock_file"
             local dock_data="$(cat "$dock_file")"
-            local ferry_data="$(curl --proto '=https' -sSf \
-                "$charon_raw_url/ferries/$ferry" \
+            local ferry_data="$(
+                curl --proto '=https' -sSf "$charon_raw_url/ferries/$ferry"
             )"
 
             create_object $ferry "$abstract_ferry_data"
