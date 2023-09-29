@@ -11,13 +11,13 @@ ${obj}_get_api_data() {
     [ -z ${${obj}_token} ] || local auth="Authorization: Bearer ${${obj}_token}"
     local version="2022-11-28"
 
-    local temp_data="$( \
+    local temp_data="$(
         curl -s \
              --request GET \
              --url "$URL" \
              --header "$auth" \
              --header "X-GitHub-Api-Version: $version" \
-        | grep -oE "\"$value\": \"[^\"]*" \
+        | grep -oE "\"$value\": \"[^\"]*"
     )"
     local processed_data="$(echo "$temp_data" | sed "s/\"$value\": \"//")"
 

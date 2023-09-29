@@ -11,7 +11,9 @@ ${obj}_get_local_version() {
         local version_tag_regex="[0-9]+\.[0-9]+\.[0-9]+"
 
         local full_local_version="$("$command" $options)"
-        ${obj}_local_version="v$(echo "$full_local_version" | grep -oE "$version_tag_regex")"
+        ${obj}_local_version="v$(
+            echo "$full_local_version" | grep -oE "$version_tag_regex"
+        )"
     fi
 
     echo "${${obj}_local_version}"

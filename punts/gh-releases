@@ -7,12 +7,12 @@ ${obj}_init() {
     ${obj}_repo="$2"
 
     if [[ ! "${${obj}_user}" =~ ^[[:alnum:]]+$ ]]; then
-        msg -e "Invalid username input. Usernames must be alphanumeric."
+        msg -e "Invalid username. Usernames must be alphanumeric."
         return 1
     fi
     
     if [[ ! "${${obj}_repo}" =~ ^[[:alnum:]]+$ ]]; then
-        msg -e "Invalid repository input. Repository names must be alphanumeric."
+        msg -e "Invalid repository. Repository names must be alphanumeric."
         return 1
     fi
 }
@@ -28,8 +28,8 @@ ${obj}__fill_url() {
 
 ${obj}_get_download_urls() {
     if [[ -z ${${obj}_download_urls} ]]; then
-        local url="$( \
-            ${obj}__fill_url "https://api.github.com/repos/%s/%s/releases/latest" \
+        local url="$(
+            ${obj}__fill_url "https://api.github.com/repos/%s/%s/releases/latest"
         )"
 
         ${obj}_download_urls="$(${obj}_get_api_data browser_download_url "$url")"
@@ -39,8 +39,8 @@ ${obj}_get_download_urls() {
 }
 
 ${obj}_get_asset_names() {
-    [[ -z "${${obj}_asset_names}" ]] && ${obj}_asset_names="$( \
-        basename "$(${obj}_get_download_urls)" \
+    [[ -z "${${obj}_asset_names}" ]] && ${obj}_asset_names="$(
+        basename "$(${obj}_get_download_urls)"
     )"
 
     echo "${${obj}_asset_names}"
@@ -48,8 +48,8 @@ ${obj}_get_asset_names() {
 
 ${obj}_get_remote_version() {
     if [[ -z "${${obj}_remote_version}" ]]; then
-        local url="$( \
-            ${obj}__fill_url "https://api.github.com/repos/%s/%s/releases/latest" \
+        local url="$(
+            ${obj}__fill_url "https://api.github.com/repos/%s/%s/releases/latest"
         )"
 
         ${obj}_remote_version="$(${obj}_get_api_data tag_name "$url")"
