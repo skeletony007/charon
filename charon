@@ -1,33 +1,15 @@
 #!/bin/bash
 
-secure_curl() {
-    local url="$1"
-    local exit_status=0
-
-    curl --proto '=https' -sSf "$url"
-    [ $? -eq 0 ] || msg -e "Failed to transfer data from $url"; exit_status=1
-
-    shift && [[ -n $@ ]] && secure_curl $@ || return $exit_status
-}
-
-eval_curl() {
-    local url="$1"
-    local exit_status=0
-
-    local data="$(secure_curl "$url")"
-    eval "$data"
-    [ $? -eq 0 ] || msg -e "Failed to evaluate data from $url"; exit_status=1
-
-    shift && [[ -n $@ ]] && eval_curl $@ || return $exit_status
-}
-
 punt() {
     local url="$1"
 
     local file=$(basename "$url")
     local variable=${file//-/_}_data
 
-    [[ -z ${!variable} ]] && eval "$variable=\"\$(secure_curl "$url")\""
+    if [[ -z ${!variable} ]]; then
+        local value="$(curl --proto '=https' -sSf "$url")"
+        ${!variable}="$value"
+    fi
 
     shift && [[ -n $@ ]] && punt $@
 }
@@ -37,25 +19,33 @@ parse() {
 
     case $command in
         install|uninstall|config)
-            ferry=$2
+            local ferry=$2
 
-            local dock_dir="$HOME/.charon"; mkdir -p "$dock_dir"
+            local dock_dir="$HOME/.charon/dock"; mkdir -p "$dock_dir"
             local dock_file="$dock_dir/$ferry"; touch "$dock_file"
             local dock_data="$(cat "$dock_file")"
-            local ferry_data="$(secure_curl "$charon_raw_url/ferries/$ferry")"
+            local ferry_data="$(curl --proto '=https' -sSf \
+                "$charon_raw_url/ferries/$ferry" \
+            )"
 
             create_object $ferry "$abstract_ferry_data"
             create_object $ferry "$ferry_data"
             create_object $ferry "$dock_data"
 
-            ${ferry}_${command}
-
             type ${ferry}_uninstall | sed -n '2,$p' > "$dock_file"
 
+            ${ferry}_${command}
+
+            local log_file="$HOME/.charon/all-programs"
+
+            if ! grep -q "^$ferry$" "$log_file"; then
+                echo "$ferry" >> "$log_file"
+            fi
+            
             shift 2 && [[ -n $@ ]] && parse $command $@
         ;;
         --help|-h)
-            secure_curl "$charon_raw_url/usage"
+            curl --proto '=https' -sSf "$charon_raw_url/usage"
         ;;
         *)
             msg --unknown-command "$command"
@@ -69,12 +59,14 @@ main() {
     local bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
     local dotfiles_raw_url="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
 
-    eval_curl "$charon_raw_url/colors" \
-              "$charon_raw_url/messages" \
-              "$bash_utils_raw_url/object/object" \
-              "$bash_utils_raw_url/shell-functions/shell-functions"
+    eval "$(curl --proto '=https' -sSf \
+        "$charon_raw_url/colors" \
+        "$charon_raw_url/messages" \
+        "$bash_utils_raw_url/object/object" \
+        "$bash_utils_raw_url/shell-functions/shell-functions" \
+    )"
 
-    local gh_wrapper_data="$(secure_curl "$charon_raw_url/punts/gh-wrapper")"
+    local gh_wrapper_data="$(curl --proto '=https' -sSf "$charon_raw_url/punts/gh-wrapper")"
     create_object charon "$gh_wrapper_data"
 
     punt $(charon_get_api_data download_url "$charon_api_url/punts")

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+${obj}_install() {
+    asset_url="https://tunnelblick.net/iprelease/Latest_Tunnelblick_Stable.dmg"
+    package="Tunnelblick.app"
+    
+    TMP_FILE=$(mktemp)
+    secure_curl -L -o "$TMP_FILE" "$asset_url"
+    sudo hdiutil attach "$TMP_FILE"
+    sudo cp -r "/Volumes/Tunnelblick/$package" "/Applications"
+    sudo hdiutil detach "/Volumes/Tunnelblick"
+    rm "$TMP_FILE"
+    
+    sudo chown -R root "/Applications/$package"
+}
+
