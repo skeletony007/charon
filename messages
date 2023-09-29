@@ -1,7 +1,7 @@
 #!/bin/bash
 
 msg() {
-    local prefix; local message; local redirect
+    local prefix; local message; local redirect=""
 
     case $1 in
         -e|--error)
