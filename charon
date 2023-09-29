@@ -35,7 +35,9 @@ parse() {
             create_object $ferry "$ferry_data"
             create_object $ferry "$dock_data"
 
-            type ${ferry}_uninstall | sed -n '2,$p' > "$dock_file"
+            [ $command == install ] && {
+                type ${ferry}_uninstall | sed -n '2,$p' > "$dock_file"
+            }
 
             ${ferry}_${command}
 
@@ -44,7 +46,7 @@ parse() {
             if ! grep -q "^$ferry$" "$log_file"; then
                 echo "$ferry" >> "$log_file"
             fi
-            
+
             shift 2 && [[ -n $@ ]] && parse $command $@
         ;;
         --help|-h)
@@ -76,8 +78,8 @@ main() {
 
     create_object charon "$gh_wrapper_data"
 
-    punt $( \
-        charon_get_api_data download_url "$charon_api_url/punts" \
+    punt $( 
+        charon_get_api_data download_url "$charon_api_url/punts"
     )
 
     parse $@
