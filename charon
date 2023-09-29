@@ -44,7 +44,7 @@ parse()
             ${ferry}_${command}
 
             local log_file="$HOME/.charon/all-programs"
-            [ $command == install && ! grep -q "^$ferry$" "$log_file" ] && {
+            [[ $command == install && ! grep -q "^$ferry$" "$log_file" ]] && {
                 echo "$ferry" >> "$log_file"
             }
 
