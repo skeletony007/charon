@@ -1,6 +1,7 @@
 #!/bin/bash
 
-punt() {
+punt()
+{
     local url="$1"
 
     local file=$(basename "$url")
@@ -17,7 +18,8 @@ punt() {
     shift && [[ -n $@ ]] && punt $@
 }
 
-parse() {
+parse()
+{
     local command=$1
 
     case $command in
@@ -41,7 +43,7 @@ parse() {
 
             ${ferry}_${command}
 
-            [ $command == install && ! grep -q "^$ferry$" "$log_file" ] && {
+            [[ $command == install && ! grep -q "^$ferry$" "$log_file" ]] && {
                 local log_file="$HOME/.charon/all-programs"
                 echo "$ferry" >> "$log_file"
             }
@@ -57,7 +59,8 @@ parse() {
     esac
 }
 
-main() {
+main()
+{
     local charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
     local charon_raw_url="https://raw.githubusercontent.com/skeletony007/charon/main"
     local bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
