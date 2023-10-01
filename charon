@@ -39,18 +39,21 @@ parse() {
             create_object $ferry "$dock_data"
 
             [ $command == install ] && {
-                type ${ferry}_uninstall | sed -n '2,$p' > "$dock_file"
+                local uninstall_data="$(
+                    type ${ferry}_uninstall | sed -n '2,$p'
+                )"
+                cache_write "dock/$ferry" "$uninstall_data"
             }
 
             ${ferry}_${command}
             if [ $? -eq 0 ]; then
                 case $command in
                     install)
-                        cache write "$ferry" "all-programs"
+                        cache_write "all-programs" "$ferry"
                     ;;
                     uninstall)
-                        cache delete "dock/$ferry"
-                        cache delete "all-programs" $ferry
+                        cache_delete "dock/$ferry"
+                        cache_delete "all-programs" $ferry
                     ;;
                 esac
             else
