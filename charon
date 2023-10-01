@@ -1,7 +1,6 @@
 #!/bin/bash
 
-punt()
-{
+punt() {
     local url="$1"
 
     local file=$(basename "$url")
@@ -18,23 +17,25 @@ punt()
     shift && [[ -n $@ ]] && punt $@
 }
 
-parse()
-{
+parse() {
     local command=$1
 
     case $command in
         install|uninstall|config)
             local ferry=$2
 
-            local dock_dir="$HOME/.charon/dock"; mkdir -p "$dock_dir"
-            local dock_file="$dock_dir/$ferry"; touch "$dock_file"
-            local dock_data="$(cat "$dock_file")"
+            if [[ $ferry == *" "* ]] then
+                msg --warning "Operation stopped: Program names must not contain spaces"
+                return 1
+            fi
+
             local ferry_data="$(
                 curl --proto '=https' -sSf "$charon_raw_url/ferries/$ferry"
             )"
 
             create_object $ferry "$abstract_ferry_data"
             create_object $ferry "$ferry_data"
+
             create_object $ferry "$dock_data"
 
             [ $command == install ] && {
@@ -42,11 +43,20 @@ parse()
             }
 
             ${ferry}_${command}
-
-            local log_file="$HOME/.charon/all-programs"
-            [[ $command == install && ! grep -q "^$ferry$" "$log_file" ]] && {
-                echo "$ferry" >> "$log_file"
-            }
+            if [ $? -eq 0 ]; then
+                case $command in
+                    install)
+                        cache write "$ferry" "all-programs"
+                    ;;
+                    uninstall)
+                        cache delete "dock/$ferry"
+                        cache delete "all-programs" $ferry
+                    ;;
+                esac
+            else
+                msg --warning "${action^} failed"
+                parse uninstall $ferry
+            fi
 
             shift 2 && [[ -n $@ ]] && parse $command $@
         ;;
@@ -59,8 +69,7 @@ parse()
     esac
 }
 
-main()
-{
+main() {
     local charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
     local charon_raw_url="https://raw.githubusercontent.com/skeletony007/charon/main"
     local bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
@@ -77,8 +86,12 @@ main()
     local gh_wrapper_data="$( \
         curl --proto '=https' -sSf "$charon_raw_url/punts/gh-wrapper"
     )"
-
     create_object charon "$gh_wrapper_data"
+    
+    local cache_data="$( \
+        curl --proto '=https' -sSf "$charon_raw_url/cache"
+    )"
+    create_object cache "$cache_data" "$HOME/.charon"
 
     punt $( 
         charon_get_api_data download_url "$charon_api_url/punts"

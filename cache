@@ -1,0 +1,26 @@
+#!/bin/bash
+
+${obj}_init() {
+        ${obj}_cache_dir="$1"; mkdir -p "${${obj}_cache_dir}"
+}
+
+${obj}_write() {
+    local file="${${obj}_cache_dir}/$1" 
+    local data="$2"
+
+    mkdir -p "$(dirname "$file")"; touch "$file"
+
+    if ! grep -q "^$data$" "$file"; then
+        echo "$data" >> "$file"
+    fi
+}
+
+${obj}_delete() {
+    local file="${${obj}_cache_dir}/$1"
+    local data="$2"
+
+    [ -f "$file" ] || return 1
+
+    [[ -n $data ]] && sed -i "" "/^$data\$/d" "$file" || rm "$file"
+}
+
