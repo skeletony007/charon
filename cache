@@ -24,3 +24,12 @@ ${obj}_delete() {
     [[ -n $data ]] && sed -i "" "/^$data\$/d" "$file" || rm "$file"
 }
 
+${obj}_read() {
+    local file="${${obj}_cache_dir}/$1"
+    local data="$(cat "$file")"
+
+    [ -f "$file" ] || return 1
+
+    echo "$data"
+}
+
