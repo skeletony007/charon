@@ -19,16 +19,16 @@ ${obj}_delete() {
     local file="${${obj}_cache_dir}/$1"
     local data="$2"
 
-    [ -f "$file" ] || return 1
+    [ -f "$file" ] || return
 
     [[ -n $data ]] && sed -i "" "/^$data\$/d" "$file" || rm "$file"
 }
 
 ${obj}_read() {
     local file="${${obj}_cache_dir}/$1"
-    local data="$(cat "$file")"
+    local data
 
-    [ -f "$file" ] || return 1
+    [ -f "$file" ] && local data="$(cat "$file")"
 
     echo "$data"
 }
