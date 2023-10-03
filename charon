@@ -24,8 +24,8 @@ parse() {
         install|uninstall|config)
             local ferry=$2
 
-            if [[ $ferry == *" "* ]]; then
-                msg --warning "Operation stopped: Program names must not contain spaces"
+            if [[ "$1" == *' '* ]]; then
+                msg --warning 'Operation stopped: Program names must not contain spaces'
                 return 1
             fi
 
@@ -33,52 +33,51 @@ parse() {
                 curl --proto '=https' -sSf "$charon_raw_url/ferries/$ferry"
             )"
             local dock_data="$(
-                cache_read "dock/$ferry"
+                cache_read dock/$ferry
             )"
 
             create_object $ferry "$abstract_ferry_data"
             create_object $ferry "$ferry_data"
             create_object $ferry "$dock_data"
-        ;;
+
+            ${ferry}_${command}
+            local exit_status="$?"
+
+            if [ "$exit_status" -ne 0 ]; then
+                if [ $command == install ]; then
+                    parse uninstall $ferry
+                fi
+                msg --warning "$(tr '[:lower:]' '[:upper:]' <<< ${command:0:1})${command:1} failed: charon $command $ferry"
+            elif [ $command == install ] || [ $command == uninstall ]; then
+                local uninstall_data="$(
+                    type ${ferry}_uninstall | sed -n '2,$p'
+                )"
+
+                local direction
+
+                case $command in
+                    install)
+                        direction=write    
+                    ;;
+                    uninstall)
+                        direction=delete
+                    ;;
+                esac
+
+                ## Possible improvement: write a fold func.
+                cache_$direction all-programs $program
+                cache_$direction dock/$program "$uninstall_data"
+            fi
+
+            shift 2 && [[ -n $@ ]] && parse $command $@
+            ;;
         --help|-h)
             curl --proto '=https' -sSf "$charon_raw_url/usage"
-            return
-        ;;
+            ;;
         *)
             msg --unknown-command "$command"
             return 1
-        ;;
-    esac
-
-    case $command in
-        install)
-            local uninstall_data="$(
-                type ${ferry}_uninstall | sed -n '2,$p'
-            )"
-            cache_write "dock/$ferry" "$uninstall_data"
-        ;;
-    esac
-
-    case $command in
-        install|uninstall|config)
-            ${ferry}_${command}
-            [ $? -ne 0 ] && {
-                msg --warning "${action^} failed: charon $action $ferry"
-                parse uninstall $ferry
-            }
-
-            shift 2 && [[ -n $@ ]] && parse $command $@
-        ;;
-    esac
-
-    case $command in
-        install)
-            cache_write "all-programs" "$ferry"
-        ;;
-        uninstall)
-            cache_delete "dock/$ferry"
-            cache_delete "all-programs" $ferry
-        ;;
+            ;;
     esac
 }
 
