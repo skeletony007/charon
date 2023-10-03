@@ -65,8 +65,8 @@ parse() {
                 esac
 
                 ## Possible improvement: write a fold func.
-                cache_$direction all-programs $program
-                cache_$direction dock/$program "$uninstall_data"
+                cache_$direction all-programs $ferry
+                cache_$direction dock/$ferry "$uninstall_data"
             fi
 
             shift 2 && [[ -n $@ ]] && parse $command $@
