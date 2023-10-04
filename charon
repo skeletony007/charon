@@ -119,6 +119,9 @@ main() {
         charon_get_api_data download_url "$charon_api_url/punts"
     )
 
+    eval "$COLORS_DATA
+          $MESSAGES_DATA"
+
     scanl "parse $1" 1 ${@:2}
 }
 
