@@ -16,7 +16,7 @@ punt() {
     local url="$1"
 
     local file=$(basename "$url")
-    local variable=${file//-/_}_data; local value
+    local variable=$(tr '[:lower:]' '[:upper:]' <<< ${file//-/_})_DATA; local value
 
     [[ -z ${!variable} ]] && {
         if value="$(curl --proto '=https' -sSf "$url")"; then
@@ -47,10 +47,9 @@ parse() {
                 cache_read dock/$ferry
             )"
 
-            scanl create_object 2 \
-                 $ferry "$abstract_ferry_data" \
-                 $ferry "$ferry_data" \
-                 $ferry "$dock_data"
+            create_object $ferry "$ABSTRACT_FERRY_DATA
+                                  $ferry_data
+                                  $dock_data"
 
             ${ferry}_${command}
             local exit_status=$?
@@ -102,22 +101,20 @@ main() {
 
     eval "$(
         curl --proto '=https' -sSf \
-            "$charon_raw_url/colors" \
-            "$charon_raw_url/messages" \
             "$bash_utils_raw_url/object/object" \
             "$bash_utils_raw_url/shell-functions/shell-functions"
     )"
 
-    local gh_wrapper_data="$( \
-        curl --proto '=https' -sSf "$charon_raw_url/punts/gh-wrapper"
-    )"
-    create_object charon "$gh_wrapper_data"
-    
     local cache_data="$( \
         curl --proto '=https' -sSf "$charon_raw_url/cache"
     )"
     create_object cache "$cache_data" "$HOME/.charon"
 
+    GH_WRAPPER_DATA="$( \
+        curl --proto '=https' -sSf "$charon_raw_url/punts/gh-wrapper"
+    )"
+    create_object charon "$GH_WRAPPER_DATA"
+    
     scanl punt 1 $( 
         charon_get_api_data download_url "$charon_api_url/punts"
     )
