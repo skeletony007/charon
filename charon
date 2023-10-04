@@ -60,6 +60,7 @@ parse() {
                     parse uninstall $ferry
                 fi
                 msg --warning "$(tr '[:lower:]' '[:upper:]' <<< ${command:0:1})${command:1} failed: charon $command $ferry"
+                return 1
             elif [ $command == install ] || [ $command == uninstall ]; then
                 local uninstall_data="$(
                     type ${ferry}_uninstall | sed -n '2,$p'
@@ -80,6 +81,8 @@ parse() {
                     all-programs $ferry \
                     dock/$ferry "$uninstall_data"
             fi
+
+            return 0
             ;;
         --help|-h)
             curl --proto '=https' -sSf "$charon_raw_url/usage"
