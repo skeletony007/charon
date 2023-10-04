@@ -30,7 +30,7 @@ ${obj}_install() {
 
         msg --downloading "$asset_name"
 
-        ${obj}_download_release_asset "$asset_name" - | tar -zxvf - -C "$BIN_DIR"
+        ${obj}_release_download_asset "$asset_name" - | tar -zxvf - -C "$BIN_DIR"
         [ $? -ne 0 ] && return 1
     fi
 
