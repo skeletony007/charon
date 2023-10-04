@@ -1,20 +1,31 @@
 #!/bin/bash
 
+scanl() {
+    local function="$1"
+    local num_args=$2
+
+    $function "${@:3:$num_args}"
+    [ $? -ne 0 ] && {
+        msg --warning "Failed evaluation: $function \"${@:3:$num_args}\""
+    }
+
+    shift $((2 + $num_args)) && [[ -n $@ ]] && scanl "$function" $num_args "$@"
+}
+
 punt() {
     local url="$1"
 
     local file=$(basename "$url")
     local variable=${file//-/_}_data; local value
-    
+
     [[ -z ${!variable} ]] && {
         if value="$(curl --proto '=https' -sSf "$url")"; then
             eval "$variable=\"\$value\""
         else
             msg --error "Failed to transfer data from $url"
+            return 1
         fi
-    }
-
-    shift && [[ -n $@ ]] && punt $@
+    } || return 0
 }
 
 parse() {
@@ -36,14 +47,15 @@ parse() {
                 cache_read dock/$ferry
             )"
 
-            create_object $ferry "$abstract_ferry_data"
-            create_object $ferry "$ferry_data"
-            create_object $ferry "$dock_data"
+            scanl create_object 2 \
+                 $ferry "$abstract_ferry_data" \
+                 $ferry "$ferry_data" \
+                 $ferry "$dock_data"
 
             ${ferry}_${command}
-            local exit_status="$?"
+            local exit_status=$?
 
-            if [ "$exit_status" -ne 0 ]; then
+            if [ $exit_status -ne 0 ]; then
                 if [ $command == install ]; then
                     parse uninstall $ferry
                 fi
@@ -64,12 +76,10 @@ parse() {
                     ;;
                 esac
 
-                ## Possible improvement: write a fold func.
-                cache_$direction all-programs $ferry
-                cache_$direction dock/$ferry "$uninstall_data"
+                scanl cache_$direction 2 \
+                    all-programs $ferry \
+                    dock/$ferry "$uninstall_data"
             fi
-
-            shift 2 && [[ -n $@ ]] && parse $command $@
             ;;
         --help|-h)
             curl --proto '=https' -sSf "$charon_raw_url/usage"
@@ -105,11 +115,11 @@ main() {
     )"
     create_object cache "$cache_data" "$HOME/.charon"
 
-    punt $( 
+    scanl punt 1 $( 
         charon_get_api_data download_url "$charon_api_url/punts"
     )
 
-    parse $@
+    scanl "parse $1" 1 ${@:2}
 }
 
 main $@

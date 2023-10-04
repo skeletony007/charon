@@ -1,17 +1,17 @@
 #!/bin/bash
 
 ${obj}_install() {
-    msg -w "Not implemented: This method would install ${obj}"
+    msg "Not implemented: This method would install ${obj}"
     return 1
 }
 
 ${obj}_uninstall() {
-    msg -w "Not implemented: This method would uninstall ${obj}" 
+    msg "Not implemented: This method would uninstall ${obj}" 
     return 1
 }
 
 ${obj}_config() {
-    msg -w "Not implemented: This method would configure ${obj}"
+    msg "Not implemented: This method would configure ${obj}"
     return 1
 }
 
