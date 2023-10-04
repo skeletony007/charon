@@ -6,7 +6,7 @@ scanl() {
 
     $function "${@:3:$num_args}"
     [ $? -ne 0 ] && {
-        msg --warning "Failed evaluation: $function \"${@:3:$num_args}\""
+        msg "Failed evaluation: $function \"${@:3:$num_args}\""
     }
 
     shift $((2 + $num_args)) && [[ -n $@ ]] && scanl "$function" $num_args "$@"
