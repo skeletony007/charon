@@ -28,7 +28,7 @@ ${obj}_read() {
     local file="${${obj}_cache_dir}/$1"
     local data
 
-    [ -f "$file" ] && local data="$(cat "$file")"
+    [ -f "$file" ] && local data="$(<"$file")"
 
     echo "$data"
 }
