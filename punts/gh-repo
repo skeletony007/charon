@@ -61,7 +61,7 @@ ${obj}_get_dir_urls() {
     echo $dir_api_urls
 }
 
-${obj}_download_dir {
+${obj}_download_dir() {
     local url=$1
     local output=$2
     
