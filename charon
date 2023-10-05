@@ -105,18 +105,18 @@ main() {
             "$bash_utils_raw_url/shell-functions/shell-functions"
     )"
 
-    local cache_data="$( \
+    local cache_data="$(
         curl --proto '=https' -sSf "$charon_raw_url/cache"
     )"
     create_object cache "$cache_data" "$HOME/.charon"
 
-    GH_WRAPPER_DATA="$( \
+    GH_WRAPPER_DATA="$(
         curl --proto '=https' -sSf "$charon_raw_url/punts/gh-wrapper"
     )"
     create_object charon "$GH_WRAPPER_DATA"
     
     scanl punt 1 $( 
-        charon_get_api_data download_url "$charon_api_url/punts"
+        $(charon_get_api_data "$charon_api_url/punts" '^"download_url": "([^"]*)$')[1]
     )
 
     eval "$COLORS_DATA

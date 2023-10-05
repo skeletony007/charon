@@ -5,22 +5,26 @@ ${obj}_init() {
 }
 
 ${obj}_get_api_data() {
-    local value="$1"
-    local URL="$2"
+    local url="$1"
+    local regex="$2"
+
+    local data
 
     [ -z ${${obj}_token} ] || local auth="Authorization: Bearer ${${obj}_token}"
     local version="2022-11-28"
 
-    local temp_data="$(
+    local response="$(
         curl -s \
              --request GET \
-             --url "$URL" \
+             --url "$url" \
              --header "$auth" \
              --header "X-GitHub-Api-Version: $version" \
-        | grep -oE "\"$value\": \"[^\"]*"
     )"
-    local processed_data="$(echo "$temp_data" | sed "s/\"$value\": \"//")"
 
-    echo "$processed_data"
+    if [[ $response =~ $regex ]] then
+        data="$BASH_REMATCH"
+    fi
+
+    echo "$data"
 }
 
