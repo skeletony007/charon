@@ -1,10 +1,12 @@
 #!/bin/bash
 
-${obj}_init() {
+${obj}_init()
+{
     ${obj}_token="$(<"$HOME/.gh-wrapper/token")"
 }
 
-${obj}_get_api_data() {
+${obj}_get_api_data()
+{
     local url="$1"
     local regex="$2"
 
@@ -21,7 +23,8 @@ ${obj}_get_api_data() {
              --header "X-GitHub-Api-Version: $version" \
     )"
 
-    if [[ $response =~ $regex ]] then
+    if [[ $response =~ $regex ]]
+    then
         data="$BASH_REMATCH"
     fi
 
