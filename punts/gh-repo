@@ -30,44 +30,48 @@ ${obj}__fill_url() {
 }
 
 ${obj}_get_file_download_urls() {
-    local dir_path="$1"
+    local url=$1
 
-    local url="$(
-        ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$dir_path?ref=${${obj}_branch}"
-    )"
-
-    local regex=
+    local regex='"download_url":[ ]*"([^"]*)"[^}]*"type":[ ]*"file"'
 
     local file_download_urls="$(
-        ${obj}_get_api_data "$url" '^"download_url": "([^"]*)$'
+        ${obj}_get_api_data "$regex" "$url" 
     )"
 
-    echo "$file_download_urls"
+    echo $file_download_urls
 }
 
 ${obj}_get_file_data() {
-    local file_path="$1"
-
-    local url="$(
-        ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$file_path?ref=${${obj}_branch}"
-    )"
+    local url=$1
 
     local data="$(curl --proto '=https' -sSf "$url")"
 
-    echo "$data"
+    echo $data
 }
 
-${obj}_get_folder_urls() {
-    local dir_path="$1"
+${obj}_get_dir_urls() {
+    local url=$1
 
-    local url="$(
-        ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$dir_path?ref=${${obj}_branch}"
+    local regex='"url":[ ]*"([^"]*)"[^}]*"type":[ ]*"dir"'
+
+    local dir_api_urls="$(
+        ${obj}_get_api_data "$regex" "$url"
     )"
+    
+    echo $dir_api_urls
+}
 
-    local file_download_urls="$(
-        ${obj}_get_api_data "$url" '^"download_url": "null"$'
-    )"
+${obj}_download_dir {
+    local url=$1
+    local output=$2
+    
+    local file_download_urls="$(${obj}_get_file_urls "$url")"
+    local dir_urls="$(${obj}_get_dir_urls "$url")"
 
+    for file_download_url in $file_download_urls; do
+    done
+    for dir_url in $dir_urls; do
+    done
 }
 
 ${obj}_get_release_download_urls() {

@@ -5,10 +5,8 @@ ${obj}_init() {
 }
 
 ${obj}_get_api_data() {
-    local url="$1"
-    local regex="$2"
-
-    local data
+    local url=$1
+    local regex=$2
 
     [ -z ${${obj}_token} ] || local auth="Authorization: Bearer ${${obj}_token}"
     local version="2022-11-28"
@@ -21,10 +19,10 @@ ${obj}_get_api_data() {
              --header "X-GitHub-Api-Version: $version" \
     )"
 
-    if [[ $response =~ $regex ]]; then
-        data="${BASH_REMATCH[@]:1}"
-    fi
+    local data="$(
+        regex "$regex" "$response"
+    )"
 
-    echo "$data"
+    echo $data
 }
 
