@@ -102,7 +102,8 @@ main() {
     eval "$(
         curl --proto '=https' -sSf \
             "$bash_utils_raw_url/object/object" \
-            "$bash_utils_raw_url/shell-functions/shell-functions"
+            "$bash_utils_raw_url/shell-functions/shell-functions" \
+            "$charon_raw_url/punts/regex"
     )"
 
     local cache_data="$(
@@ -123,8 +124,7 @@ main() {
     )
 
     eval "$COLORS_DATA
-          $MESSAGES_DATA
-          $REGEX_DATA"
+          $MESSAGES_DATA"
 
     scanl "parse $1" 1 ${@:2}
 }
