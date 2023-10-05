@@ -123,7 +123,8 @@ main() {
     )
 
     eval "$COLORS_DATA
-          $MESSAGES_DATA"
+          $MESSAGES_DATA
+          $REGEX_DATA"
 
     scanl "parse $1" 1 ${@:2}
 }
