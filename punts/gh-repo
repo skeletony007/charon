@@ -69,8 +69,10 @@ ${obj}_download_dir() {
     local dir_urls="$(${obj}_get_dir_urls "$url")"
 
     for file_download_url in $file_download_urls; do
+        echo "downloading $file_download_url"
     done
     for dir_url in $dir_urls; do
+        echo "searching $dir_url"
     done
 }
 
@@ -80,12 +82,14 @@ ${obj}_get_release_download_urls() {
             ${obj}__fill_url 'https://api.github.com/repos/%s/%s/releases/latest'
         )"
 
+        local regex='"browser_download_url":[ ]*"([^"]*)"'
+
         ${obj}_release_download_urls="$(
-            ${obj}_get_api_data "$url" '^"browser_download_url": "([^"]*)"$'
+            ${obj}_get_api_data "$regex" "$url"
         )"
     fi
 
-    echo "${${obj}_download_urls}"
+    echo "${${obj}_release_download_urls}"
 }
 
 ${obj}_get_release_asset_names() {
@@ -102,8 +106,10 @@ ${obj}_get_remote_version() {
             ${obj}__fill_url "https://api.github.com/repos/%s/%s/releases/latest"
         )"
 
+        local regex='"tag_name":[ ]*"([^"]*)"'
+
         ${obj}_remote_version="$(
-            $(${obj}_get_api_data "$url" '^"tag_name": "([^"]*)"$')[1]
+            $(${obj}_get_api_data "$regex" "$url"
         )"
     fi
 
