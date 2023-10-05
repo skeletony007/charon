@@ -116,7 +116,7 @@ main() {
     create_object charon "$GH_WRAPPER_DATA"
     
     scanl punt 1 $( 
-        $(charon_get_api_data "$charon_api_url/punts" '^"download_url": "([^"]*)$')[1]
+        charon_get_api_data "$charon_api_url/punts" '^"download_url": "([^"]*)$'
     )
 
     eval "$COLORS_DATA
