@@ -50,15 +50,14 @@ ${obj}_get_dir_urls() {
 
 ${obj}_download_dir() {
     local path=$1
-    local output=$2
-    mkdir "$output"
+    local output=$2; mkdir "$output"
 
     local url="$(
         ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path?ref=${${obj}_branch}"
     )"
     
     for file_download_url in $(${obj}_get_file_download_urls "$path"); do
-        regex_file_download_url=${file_download_url//\?/\\?} \
+        local regex_file_download_url=${file_download_url//\?/\\?} \
         && regex_file_download_url=${regex_file_download_url//./\\.}
         local regex='"name":[ ]*"([^"]*)"[^}]*"download_url":[ ]*"'"$regex_file_download_url"'"[^}]*"type":[ ]*"file"'
         local file_name="$(${obj}_get_api_data "$url" "$regex")"
