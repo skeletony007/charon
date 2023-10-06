@@ -10,12 +10,12 @@ ${obj}_init() {
     [[ -z ${obj}_branch ]] && ${obj}_branch=main
 
     if [[ ! "${${obj}_user}" =~ ^[[:alnum:]]+$ ]]; then
-        msg -e 'Invalid username. Usernames must be alphanumeric.'
+        msg -e 'Invalid username: Usernames must be alphanumeric'
         return 1
     fi
     
     if [[ ! "${${obj}_repo}" =~ ^[[:alnum:]]+$ ]]; then
-        msg -e 'Invalid repository. Repository names must be alphanumeric.'
+        msg -e 'Invalid repository: Repository names must be alphanumeric'
         return 1
     fi
 }
@@ -34,19 +34,16 @@ ${obj}_get_file_download_urls() {
 
     local regex='"download_url":[ ]*"([^"]*)"[^}]*"type":[ ]*"file"'
 
-    local file_download_urls="$(
-        ${obj}_get_api_data "$regex" "$url" 
-    )"
+    local file_download_urls="$(${obj}_get_api_data "$url" "$regex")"
 
     echo $file_download_urls
 }
 
-${obj}_get_file_data() {
+${obj}_download_file() {
     local url=$1
+    local output=$2
 
-    local data="$(curl --proto '=https' -sSf "$url")"
-
-    echo $data
+    curl --proto '=https' -# -o "$output" "$url"
 }
 
 ${obj}_get_dir_urls() {
@@ -54,25 +51,28 @@ ${obj}_get_dir_urls() {
 
     local regex='"url":[ ]*"([^"]*)"[^}]*"type":[ ]*"dir"'
 
-    local dir_api_urls="$(
-        ${obj}_get_api_data "$regex" "$url"
-    )"
+    local dir_urls="$(${obj}_get_api_data "$url" "$regex")"
     
-    echo $dir_api_urls
+    echo $dir_urls
 }
 
 ${obj}_download_dir() {
     local url=$1
     local output=$2
     
+    mkdir -p "$output"
+
     local file_download_urls="$(${obj}_get_file_urls "$url")"
     local dir_urls="$(${obj}_get_dir_urls "$url")"
 
     for file_download_url in $file_download_urls; do
-        echo "downloading $file_download_url"
+        ${obj}_download_file "$file_download_url" "$output"
     done
     for dir_url in $dir_urls; do
-        echo "searching $dir_url"
+        local regex="\"name\":[ ]*\"([^\"]*)\"[^}]*url\":[ ]*\"$dir_url\"[^}]*\"type\":[ ]*\"dir\""
+        local dir_name="$(${obj}_get_api_data "$url" "$regex")"
+
+        ${obj}_download_dir "$dir_url" "$output/$dir_name"
     done
 }
 
@@ -85,7 +85,7 @@ ${obj}_get_release_download_urls() {
         local regex='"browser_download_url":[ ]*"([^"]*)"'
 
         ${obj}_release_download_urls="$(
-            ${obj}_get_api_data "$regex" "$url"
+            ${obj}_get_api_data "$url" "$regex"
         )"
     fi
 
