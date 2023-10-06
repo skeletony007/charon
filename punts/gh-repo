@@ -51,7 +51,7 @@ ${obj}_get_dir_urls() {
 ${obj}_download_dir() {
     local path=$1
     local output=$2
-    mkdir -p "$output"
+    mkdir "$output"
 
     local url="$(
         ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path?ref=${${obj}_branch}"
