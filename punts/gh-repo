@@ -63,6 +63,7 @@ ${obj}_download_dir() {
 
         ${obj}_download_file "$file_download_url" "$output/$file_name"
     done
+    echo "$(${obj}_get_dir_urls "$path")"
     for dir_url in $(${obj}_get_dir_urls "$path"); do
         local regex='"name":[ ]*"([^"]*)"[^}]*"url":[ ]*"'"$dir_url"'"[^}]*"type":[ ]*"dir"'
         local dir_name="$(${obj}_get_api_data "$url" "$regex")"
