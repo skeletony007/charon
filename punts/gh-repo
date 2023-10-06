@@ -57,8 +57,7 @@ ${obj}_download_dir() {
     )"
     
     for file_download_url in $(${obj}_get_file_download_urls "$path"); do
-        local regex_file_download_url=${file_download_url//\?/\\?} \
-        && regex_file_download_url=${regex_file_download_url//./\\.}
+        local regex_file_download_url=${file_download_url//\?/\\?} && regex_file_download_url=${regex_file_download_url//./\\.}
         local regex='"name":[ ]*"([^"]*)"[^}]*"download_url":[ ]*"'"$regex_file_download_url"'"[^}]*"type":[ ]*"file"'
         local file_name="$(${obj}_get_api_data "$url" "$regex")"
 
