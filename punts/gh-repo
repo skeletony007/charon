@@ -109,7 +109,7 @@ ${obj}_get_remote_version() {
         local regex='"tag_name":[ ]*"([^"]*)"'
 
         ${obj}_remote_version="$(
-            $(${obj}_get_api_data "$regex" "$url"
+            ${obj}_get_api_data "$regex" "$url"
         )"
     fi
 
