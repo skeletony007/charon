@@ -59,6 +59,7 @@ ${obj}_download_dir() {
             ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path?ref=${${obj}_branch}"
         )"
         local regex='"name":[ ]*"([^"]*)"[^}]*"download_url":[ ]*"'"$url"'"[^}]*"type":[ ]*"file"'
+        echo "$regex"
         local file_name="$(${obj}_get_api_data "$file_download_url" "$regex")"
 
         echo "Downloading file: $file_download_url -> $output/$file_name"
