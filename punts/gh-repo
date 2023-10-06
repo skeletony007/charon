@@ -58,7 +58,7 @@ ${obj}_download_dir() {
     local dir_urls="$(${obj}_get_dir_urls "$path")"
 
     for file_download_url in "$file_download_urls"; do
-        echo "Downloading file:\n$file_download_url \n$output"
+        echo $"Downloading file:\n $file_download_url \n$output"
         ${obj}_download_file "$file_download_url" "$output"
     done
     for dir_url in "$dir_urls"; do
