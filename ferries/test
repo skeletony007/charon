@@ -12,6 +12,3 @@ ${obj}_install() {
     ${obj}_download_dir '.firefox' "$test_dir/.firefox"
 }
 
-${obj}_uninstall() {
-}
-
