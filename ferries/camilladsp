@@ -21,9 +21,9 @@ ${obj}_install() {
     PATH="$BIN_DIR:$PATH"
 
     if ${obj}_is_latest; then
-        msg --not-upgrading camilladsp
+        msg --not-upgrading ${obj}
     else
-        msg --installing camilladsp
+        msg --installing ${obj}
 
         mkdir -p "$BIN_DIR"
         local asset_name="${${obj}_asset_name}"
