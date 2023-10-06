@@ -21,7 +21,7 @@ ${obj}_get_file_download_urls() {
     local path=$1
 
     local url="$(
-        ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path?ref=${${obj}_branch}"
+        ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path"
     )"
     local regex='"download_url":[ ]*"([^"]*)"[^}]*"type":[ ]*"file"'
     local file_download_urls=$(${obj}_get_api_data "$url" "$regex")
