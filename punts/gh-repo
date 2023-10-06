@@ -58,12 +58,15 @@ ${obj}_download_dir() {
     )"
     
     for file_download_url in $(${obj}_get_file_download_urls "$path"); do
+        file_download_url=${file_download_url//\?/\\?} \
+        && file_download_url=${file_download_url//./\\.}
         local regex='"name":[ ]*"([^"]*)"[^}]*"download_url":[ ]*"'"$file_download_url"'"[^}]*"type":[ ]*"file"'
         local file_name="$(${obj}_get_api_data "$url" "$regex")"
 
         ${obj}_download_file "$file_download_url" "$output/$file_name"
     done
-    for dir_url in ${${$(${obj}_get_dir_urls "$path")//\?/\\?}//./\\.}; do
+    for dir_url in $(${obj}_get_dir_urls "$path"); do
+        dir_url=${dir_url//\?/\\?} && dir_url=${dir_url//./\\.}
         local regex='"name":[ ]*"([^"]*)"[^}]*"url":[ ]*"'"$dir_url"'"[^}]*"type":[ ]*"dir"'
         local dir_name="$(${obj}_get_api_data "$url" "$regex")"
 
