@@ -51,26 +51,24 @@ ${obj}_get_dir_urls() {
 ${obj}_download_dir() {
     local path=$1
     local output=$2
-
     mkdir -p "$output"
+
+    local url="$(
+        ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path?ref=${${obj}_branch}"
+    )"
     
     for file_download_url in $(${obj}_get_file_download_urls "$path"); do
-        local url="$(
-            ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path?ref=${${obj}_branch}"
-        )"
         local regex='"name":[ ]*"([^"]*)"[^}]*"download_url":[ ]*"'"$file_download_url"'"[^}]*"type":[ ]*"file"'
-        echo "$regex"
         local file_name="$(${obj}_get_api_data "$url" "$regex")"
 
-        echo "Downloading file: $file_download_url -> $output/$file_name"
         ${obj}_download_file "$file_download_url" "$output/$file_name"
     done
-#    for dir_url in $dir_urls; do
-#        local regex="\"name\":[ ]*\"([^\"]*)\"[^}]*url\":[ ]*\"${dir_url}\"[^}]*\"type\":[ ]*\"dir\""
-#        local dir_name="$(${obj}_get_api_data "$url" "$regex")"
-#
-#        ${obj}_download_dir "$path/$dir_name" "$output/$dir_name"
-#    done
+    for dir_url in $(${obj}_get_dir_urls "$path"); do
+        local regex='"name":[ ]*"([^"]*)"[^}]*"download_url":[ ]*"'"$dir_url"'"[^}]*"type":[ ]*"dir"'
+        local dir_name="$(${obj}_get_api_data "$url" "$regex")"
+
+        ${obj}_download_dir "$path/$dir_name" "$output/$dir_name"
+    done
 }
 
 ${obj}_get_release_download_urls() {
