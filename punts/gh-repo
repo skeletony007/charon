@@ -53,7 +53,7 @@ ${obj}_download_dir() {
     local output=$2
 
     echo "$path -\> $output"
-    echo $(${obj}_get_file_download_urls $path)
+    echo $(${obj}_get_file_download_urls "$path")
 
     mkdir -p "$output"
     
