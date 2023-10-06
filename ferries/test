@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ${obj}_init() {
-    create_object ${obj} "$GH_REPO_DATA" "skeletony007" "charon"
+    create_object ${obj} "$GH_REPO_DATA" "skeletony007" ".dotfiles"
 
     ${obj}_TEST_DIR="$HOME/${obj}"
 }
@@ -9,6 +9,6 @@ ${obj}_init() {
 ${obj}_install() {
     local test_dir="${${obj}_TEST_DIR}"
     
-    ${obj}_download_dir '' "$test_dir/.charon"
+    ${obj}_download_dir '.firefox' "$test_dir/.dotfiles/.firefox"
 }
 
