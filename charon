@@ -35,7 +35,7 @@ parse() {
         install|uninstall|config)
             local ferry=$2
 
-            if [[ "$1" == *' '* ]]; then
+            if [[ $1 == *' '* ]]; then
                 msg --warning 'Operation stopped: Program names must not contain spaces'
                 return 1
             fi

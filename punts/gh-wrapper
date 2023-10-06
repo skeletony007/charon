@@ -20,7 +20,7 @@ ${obj}_get_api_data() {
     )"
 
     local data="$(
-        regex "$regex" "$response"
+        regex "$response" "$regex"
     )"
 
     echo $data
