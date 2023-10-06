@@ -5,19 +5,7 @@ ${obj}_init() {
 
     ${obj}_user="$1"
     ${obj}_repo="$2"
-    ${obj}_branch="$3"
-
-    [[ -z ${obj}_branch ]] && ${obj}_branch=main
-
-    if [[ ! "${${obj}_user}" =~ ^[[:alnum:]]+$ ]]; then
-        msg -e 'Invalid username: Usernames must be alphanumeric'
-        return 1
-    fi
-    
-    if [[ ! "${${obj}_repo}" =~ ^[[:alnum:]]+$ ]]; then
-        msg -e 'Invalid repository: Repository names must be alphanumeric'
-        return 1
-    fi
+    ${obj}_branch="$3"; [[ -z ${obj}_branch ]] && ${obj}_branch=main
 }
 
 ${obj}__fill_url() {
