@@ -54,8 +54,8 @@ ${obj}_download_dir() {
 
     mkdir -p "$output"
     
-    local file_download_urls="$(${obj}_get_file_download_urls "$path")"
-    local dir_urls="$(${obj}_get_dir_urls "$path")"
+    local file_download_urls=$(${obj}_get_file_download_urls "$path")
+    local dir_urls=$(${obj}_get_dir_urls "$path")
 
     for file_download_url in $file_download_urls; do
         echo $"Downloading file:\n $file_download_url \n$output"
