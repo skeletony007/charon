@@ -52,6 +52,8 @@ ${obj}_download_dir() {
     local path=$1
     local output=$2
 
+    echo "$path -\> $output"
+
     mkdir -p "$output"
     
     for file_download_url in $(${obj}_get_file_download_urls "$path"); do
