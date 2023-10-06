@@ -5,7 +5,7 @@ ${obj}_init() {
 
     ${obj}_user="$1"
     ${obj}_repo="$2"
-    ${obj}_branch="$3"; [[ -z ${obj}_branch ]] && ${obj}_branch=main
+    ${obj}_branch="$3"; [[ -z ${${obj}_branch} ]] && ${obj}_branch=main
 }
 
 ${obj}__fill_url() {
