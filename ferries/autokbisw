@@ -1,0 +1,45 @@
+#!/bin/bash
+
+${obj}_init() {
+    create_object ${obj} "$GH_REPO_DATA" ohueter autokbisw
+    create_object ${obj}_dotfiles "$GH_REPO_DATA" skeletony007 .dotfiles
+
+    ${obj}_BIN_DIR="$HOME/bin"
+
+    case "$(uname -s)" in
+        "Darwin")
+            ${obj}_asset_name="autokbisw-1.4.4.ventura.tar.gz"
+            ;;
+        *)
+            msg -e "Unsupported operating system."; return 1
+            ;;
+    esac
+}
+
+${obj}_install() {
+    local BIN_DIR="${${obj}_BIN_DIR}"
+
+    msg --installing ${obj}
+
+    mkdir -p "$BIN_DIR"
+    local asset_name="${${obj}_asset_name}"
+
+    msg --downloading "$asset_name"
+
+    ${obj}_release_download_asset "$asset_name" - | tar -zxvf - -C "$BIN_DIR"
+    [ $? -ne 0 ] && return 1
+
+    msg "Adding Background Login Item (instructions at https://stackoverflow.com/a/13372744)"
+    local plist="$HOME/Library/LaunchAgents/com.user.loginscript.plist"
+    ${obj}_dotfiles_download_file '.autokbisw/com.user.loginscript.plist' "$plist"
+    launchctl load "$plist" ## add the the Login Item
+    launchctl start 'com.user.loginscript' ## run directly
+}
+
+${obj}_uninstall() {
+    local BIN_DIR="${${obj}_BIN_DIR}"
+
+    msg --uninstalling "$BIN_DIR/autokbisw"
+    rm "$BIN_DIR/autokbisw"
+}
+
