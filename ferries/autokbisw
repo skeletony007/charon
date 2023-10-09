@@ -40,6 +40,9 @@ ${obj}_uninstall() {
     local BIN_DIR="${${obj}_BIN_DIR}"
 
     msg --uninstalling "$BIN_DIR/autokbisw"
+    killall autokbisw
     rm "$BIN_DIR/autokbisw"
+    local plist="$HOME/Library/LaunchAgents/com.user.loginscript.plist"
+    rm "$plist"
 }
 
