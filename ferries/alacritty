@@ -25,35 +25,35 @@ ${obj}_install() {
         #
         cargo install alacritty
 
-        case "$(uname -s)" in
-            "Darwin")
-                local $APPLICATION_FILE="${${obj}_APPLICATION_FILE}"
-
-                # Configure the Alacritty.app Utility for macOS.
-                #
-                # Uses the same icon as Terminal.app
-                #
-                sudo mkdir -p "$(dirname "$APPLICATION_FILE")"
-                sudo ${obj}_dotfiles_download '.alacritty/alacritty.app.tar.gz' - | tar -zxvf - -C "$APPLICATION_FILE"
-                sudo mkdir -p "$APPLICATION_FILE/Contents/MacOS"
-                sudo ln -s "$HOME/.cargo/bin/alacritty" \
-                           "$APPLICATION_FILE/Contents/MacOS/alacritty"
-                sudo mkdir -p "$APPLICATION_FILE/Contents/Resources"
-                sudo cp '/System/Applications/Utilities/Terminal.app/Contents/Resources/Terminal.icns' \
-                        "$APPLICATION_FILE/Contents/Resources/alacritty.icns"
-                ;;
-        esac
-
-        # Download catppuccin themes.
-        #
-        # See https://github.com/catppuccin/alacritty#usage
-        #
-        msg --installing catppuccin-frappe
-        ${obj}_catppuccin_download 'catppuccin-frappe.yml' "$HOME/.config/alacritty/catppuccin/catppuccin-frappe.yml"
-
-        msg 'Adding alacritty.yml from dotfiles'
-        ${obj}_dotfiles_download '.alacritty/alacritty.yml' "$HOME/.config/alacritty/alacritty.yml"
     fi
+    case "$(uname -s)" in
+        "Darwin")
+            local $APPLICATION_FILE="${${obj}_APPLICATION_FILE}"
+
+            # Configure the Alacritty.app Utility for macOS.
+            #
+            # Uses the same icon as Terminal.app
+            #
+            sudo mkdir -p "$(dirname "$APPLICATION_FILE")"
+            sudo ${obj}_dotfiles_download '.alacritty/alacritty.app.tar.gz' - | tar -zxvf - -C "$APPLICATION_FILE"
+            sudo mkdir -p "$APPLICATION_FILE/Contents/MacOS"
+            sudo ln -s "$HOME/.cargo/bin/alacritty" \
+                       "$APPLICATION_FILE/Contents/MacOS/alacritty"
+            sudo mkdir -p "$APPLICATION_FILE/Contents/Resources"
+            sudo cp '/System/Applications/Utilities/Terminal.app/Contents/Resources/Terminal.icns' \
+                    "$APPLICATION_FILE/Contents/Resources/alacritty.icns"
+            ;;
+    esac
+
+    # Download catppuccin themes.
+    #
+    # See https://github.com/catppuccin/alacritty#usage
+    #
+    msg --installing catppuccin-frappe
+    ${obj}_catppuccin_download 'catppuccin-frappe.yml' "$HOME/.config/alacritty/catppuccin/catppuccin-frappe.yml"
+
+    msg 'Adding alacritty.yml from dotfiles'
+    ${obj}_dotfiles_download '.alacritty/alacritty.yml' "$HOME/.config/alacritty/alacritty.yml"
 }
 
 ${obj}_uninstall() {
