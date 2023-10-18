@@ -34,6 +34,7 @@ ${obj}_download() {
         path_type=$(${obj}_get_api_data "$url" "$regex")
     fi
     
+    [ -d $output ] && output="$output/$(basename "$path")"
     case $path_type in
         file)
             local download_url="$(
@@ -42,7 +43,6 @@ ${obj}_download() {
             curl --proto '=https' -# -o "$output" "$download_url"
             ;;
         dir)
-            [ -d $output ] && output="$output/$(basename "$path")"
             mkdir "$output"
 
             local path
