@@ -27,7 +27,6 @@ ${obj}_download() {
     local path_type
 
     if [[ $path == "" ]]; then
-        [ -d "$output" ] && output="$output/${${obj}_repo}"
         path_type=dir
     else
         local regex='"path":[ ]*"'"${path//./\\.}"'"[^}]*"type":[ ]*"([^"]*)"'
@@ -36,22 +35,19 @@ ${obj}_download() {
     
     case $path_type in
         file)
-            [ -d $output ] && output="$output/$(basename "$path")"
-
             local download_url="$(
                 ${obj}__fill_url "https://raw.githubusercontent.com/%s/%s/main/$path"
             )"
             curl --proto '=https' -# -o "$output" "$download_url"
             ;;
         dir)
-            [ -d $output ] && output="$output/$(basename "$path")"
             mkdir "$output"
 
             local path
             local path_regex='"path":[ ]*"([^"]*)"'
             local paths="$(${obj}_get_api_data "$url" "$regex")"
             for path in $paths; do
-                ${obj}_download "$path" "$output"
+                ${obj}_download "$path" "$output/$(basename "$path")"
             done
             ;;
     esac

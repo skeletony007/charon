@@ -12,9 +12,9 @@ ${obj}_init() {
 ${obj}_install() {
     local test_dir="${${obj}_TEST_DIR}"
 
-    ${obj}_dotfiles_download '.autokbisw/com.user.loginscript.plist' "$test_dir"
+    ${obj}_dotfiles_download '.autokbisw/com.user.loginscript.plist' "$test_dir/theplist"
 
-    ${obj}_dotfiles_download '.firefox' "$test_dir"
+    ${obj}_dotfiles_download '.firefox' "$test_dir/thefolder"
 }
 
 ${obj}_uninstall() {
