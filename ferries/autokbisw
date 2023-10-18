@@ -32,7 +32,6 @@ ${obj}_install() {
     msg "Adding Background Login Item (instructions at https://stackoverflow.com/a/13372744)"
     local plist="$HOME/Library/LaunchAgents/com.user.loginscript.plist"
     ${obj}_dotfiles_download '.autokbisw/com.user.loginscript.plist' "$plist"
-    ${obj}_dotfiles_download '.firefox' "$HOME/test/.firefox"
     launchctl load "$plist" ## add the the Login Item
     launchctl start 'com.user.loginscript' ## run directly
 }

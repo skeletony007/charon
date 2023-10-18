@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# For testing GH_REPO
+#
+
+${obj}_init() {
+    create_object ${obj}_dotfiles "$GH_REPO_DATA" skeletony007 .dotfiles
+
+    ${obj}_TEST_DIR="$HOME/test"
+}
+
+${obj}_install() {
+    local test_dir="${${obj}_TEST_DIR}"
+
+    ${obj}_dotfiles_download '.autokbisw/com.user.loginscript.plist' "$test_dir"
+
+    ${obj}_dotfiles_download '.firefox' "$test_dir"
+}
+
+${obj}_uninstall() {
+    local test_dir="${${obj}_TEST_DIR}"
+    rm -rf "$test_dir"
+}
