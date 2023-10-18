@@ -53,8 +53,8 @@ ${obj}_download() {
                 ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path?ref=$branch"
             )"
             local path
-            local path_regex='"path":[ ]*"([^"]*)"'
-            local paths="$(${obj}_get_api_data "$url" "$regex")"
+            local paths_regex='"path":[ ]*"([^"]*)"'
+            local paths="$(${obj}_get_api_data "$url" "$paths_regex")"
             for path in $paths; do
                 ${obj}_download "$path" "$output/$(basename "$path")"
             done
