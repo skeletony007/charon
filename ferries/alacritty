@@ -1,0 +1,76 @@
+#!/bin/bash
+
+${obj}_init() {
+    create_object ${obj}_dotfiles "$GH_REPO_DATA" skeletony007 .dotfiles
+    create_object ${obj} "$GH_REPO_DATA" alacritty alacritty
+    create_object ${obj} "$CLI_PROGRAM_DATA" alacritty
+
+    create_object ${obj}_catppuccin "$GH_REPO_DATA" catppuccin alacritty
+
+    case "$(uname -s)" in
+        "Darwin")
+            ${obj}_APPLICATION_FILE='/Applications/Utilities/Alacritty.app'
+            ;;
+    esac
+}
+
+${obj}_install() {
+    if ${obj}_is_latest; then
+        msg --not-upgrading ${obj}
+    else
+        msg --installing ${obj}
+        # Just install the Alacritty binary.
+        #
+        # See https://github.com/alacritty/alacritty/blob/master/INSTALL.md
+        #
+        cargo install alacritty
+
+        case "$(uname -s)" in
+            "Darwin")
+                local $APPLICATION_FILE="${${obj}_APPLICATION_FILE}"
+
+                # Configure the Alacritty.app Utility for macOS.
+                #
+                # Uses the same icon as Terminal.app
+                #
+                sudo mkdir -p "$(basename "$APPLICATION_FILE")"
+                ${obj}_dotfiles_download_dir '.alacritty/Alacritty.app' "$APPLICATION_FILE"
+                sudo mkdir -p "$APPLICATION_FILE/Contents/MacOS"
+                sudo ln -s "$HOME/.cargo/bin/alacritty" \
+                           "$APPLICATION_FILE/Contents/MacOS/alacritty"
+                sudo mkdir -p "$APPLICATION_FILE/Contents/Resources"
+                sudo cp '/System/Applications/Utilities/Terminal.app/Contents/Resources/Terminal.icns' \
+                        "$APPLICATION_FILE/Contents/Resources/alacritty.icns"
+                ;;
+        esac
+
+        # Download catppuccin themes.
+        #
+        # See https://github.com/catppuccin/alacritty#usage
+        #
+        msg --installing catppuccin-frappe
+        ${obj}_catppuccin_download_file 'catppuccin-frappe.yml' "$HOME/.config/alacritty/catppuccin/catppuccin-frappe.yml"
+
+        msg 'Adding alacritty.yml from dotfiles'
+        ${obj}_dotfiles_download_file '.alacritty/alacritty.yml' "$HOME/.config/alacritty/alacritty.yml"
+    fi
+}
+
+${obj}_uninstall() {
+    local BIN_DIR="${${obj}_BIN_DIR}"
+
+    msg --uninstalling "$BIN_DIR/camilladsp"
+    case "$(uname -s)" in
+        "Darwin")
+            local $APPLICATION_FILE="${${obj}_APPLICATION_FILE}"
+
+            # Remove the Alacritty.app Utility for macOS.
+            #
+            msg --uninstalling "$APPLICATION_FILE"
+            sudo rm -rf "$APPLICATION_FILE"
+            ;;
+    esac
+    
+    rm -rf "$HOME/.config/alacritty/catppuccin" "$HOME/.config/alacritty/alacritty.yml"
+}
+
