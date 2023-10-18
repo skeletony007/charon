@@ -28,10 +28,11 @@ ${obj}_download() {
     )"
     local path_type
 
-    if [[ $path == "" ]]; then
+    if [[ -z $path ]]; then
         path_type=dir
     else
         local regex='"path":[ ]*"'"${path//./\\.}"'"[^}]*"type":[ ]*"([^"]*)"'
+        echo $regex
         path_type=$(${obj}_get_api_data "$url" "$regex")
     fi
 
