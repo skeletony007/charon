@@ -34,7 +34,7 @@ ${obj}_install() {
                 # Uses the same icon as Terminal.app
                 #
                 sudo mkdir -p "$(basename "$APPLICATION_FILE")"
-                ${obj}_dotfiles_download_dir '.alacritty/Alacritty.app' "$APPLICATION_FILE"
+                ${obj}_dotfiles_download '.alacritty/alacritty.app.tar.gz' - | tar -zxvf - -C "$APPLICATION_FILE"
                 sudo mkdir -p "$APPLICATION_FILE/Contents/MacOS"
                 sudo ln -s "$HOME/.cargo/bin/alacritty" \
                            "$APPLICATION_FILE/Contents/MacOS/alacritty"
@@ -49,10 +49,10 @@ ${obj}_install() {
         # See https://github.com/catppuccin/alacritty#usage
         #
         msg --installing catppuccin-frappe
-        ${obj}_catppuccin_download_file 'catppuccin-frappe.yml' "$HOME/.config/alacritty/catppuccin/catppuccin-frappe.yml"
+        ${obj}_catppuccin_download 'catppuccin-frappe.yml' "$HOME/.config/alacritty/catppuccin/catppuccin-frappe.yml"
 
         msg 'Adding alacritty.yml from dotfiles'
-        ${obj}_dotfiles_download_file '.alacritty/alacritty.yml' "$HOME/.config/alacritty/alacritty.yml"
+        ${obj}_dotfiles_download '.alacritty/alacritty.yml' "$HOME/.config/alacritty/alacritty.yml"
     fi
 }
 
