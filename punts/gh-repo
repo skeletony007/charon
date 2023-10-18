@@ -34,15 +34,17 @@ ${obj}_download() {
         path_type=$(${obj}_get_api_data "$url" "$regex")
     fi
     
-    [ -d $output ] && output="$output/$(basename "$path")"
     case $path_type in
         file)
+            [ -d $output ] && output="$output/$(basename "$path")"
+
             local download_url="$(
                 ${obj}__fill_url "https://raw.githubusercontent.com/%s/%s/main/$path"
             )"
             curl --proto '=https' -# -o "$output" "$download_url"
             ;;
         dir)
+            [ -d $output ] && output="$output/$(basename "$path")"
             mkdir "$output"
 
             local path
