@@ -117,7 +117,7 @@ main() {
     create_object charon "$GH_WRAPPER_DATA"
     
     local regex='"download_url":[ ]*"([^"]*)"[^}]*"type":[ ]*"file"'
-    scanl punt 1 $(charon_get_api_data  "$charom_api_data/punts?ref=main" "$regex")
+    scanl punt 1 $(charon_get_api_data  "$charon_api_url/punts?ref=main" "$regex")
 
     eval "$COLORS_DATA
           $MESSAGES_DATA"
