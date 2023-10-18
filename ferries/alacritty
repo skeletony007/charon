@@ -50,9 +50,11 @@ ${obj}_install() {
     # See https://github.com/catppuccin/alacritty#usage
     #
     msg --installing catppuccin-frappe
+    mkdir -p "$HOME/.config/alacritty/catppuccin"
     ${obj}_catppuccin_download 'catppuccin-frappe.yml' "$HOME/.config/alacritty/catppuccin/catppuccin-frappe.yml"
 
     msg 'Adding alacritty.yml from dotfiles'
+    mkdir -p "$HOME/.config/alacritty/"
     ${obj}_dotfiles_download '.alacritty/alacritty.yml' "$HOME/.config/alacritty/alacritty.yml"
 }
 
