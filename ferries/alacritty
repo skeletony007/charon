@@ -9,7 +9,7 @@ ${obj}_init() {
 
     case "$(uname -s)" in
         "Darwin")
-            ${obj}_APPLICATION_FILE='/Applications/Utilities/Alacritty.app'
+            ${obj}_APPLICATION_DIR='/Applications/Utilities/Alacritty.app'
             ;;
     esac
 }
@@ -28,20 +28,20 @@ ${obj}_install() {
     fi
     case "$(uname -s)" in
         "Darwin")
-            local $APPLICATION_FILE="${${obj}_APPLICATION_FILE}"
+            local $APPLICATION_DIR="${${obj}_APPLICATION_DIR}"
 
             # Configure the Alacritty.app Utility for macOS.
             #
             # Uses the same icon as Terminal.app
             #
-            sudo mkdir -p "$(dirname "$APPLICATION_FILE")"
-            ${obj}_dotfiles_download '.alacritty/alacritty.app.tar.gz' - | tar -zxvf - -C "$APPLICATION_FILE"
-            sudo mkdir -p "$APPLICATION_FILE/Contents/MacOS"
+            sudo mkdir -p "$(dirname "$APPLICATION_DIR")"
+            ${obj}_dotfiles_download '.alacritty/alacritty.app.tar.gz' - | tar -zxvf - -C "$APPLICATION_DIR"
+            sudo mkdir -p "$APPLICATION_DIR/Contents/MacOS"
             sudo ln -s "$HOME/.cargo/bin/alacritty" \
-                       "$APPLICATION_FILE/Contents/MacOS/alacritty"
-            sudo mkdir -p "$APPLICATION_FILE/Contents/Resources"
-            sudo cp '/System/Applications/Utilities/Terminal.app/Contents/Resources/Terminal.icns' \
-                    "$APPLICATION_FILE/Contents/Resources/alacritty.icns"
+                       "$APPLICATION_DIR/Contents/MacOS/alacritty"
+            sudo mkdir -p "$APPLICATION_DIR/Contents/Resources"
+            sudo ln -s '/System/Applications/Utilities/Terminal.app/Contents/Resources/Terminal.icns' \
+                    "$APPLICATION_DIR/Contents/Resources/alacritty.icns"
             ;;
     esac
 
@@ -64,12 +64,12 @@ ${obj}_uninstall() {
     msg --uninstalling "$BIN_DIR/camilladsp"
     case "$(uname -s)" in
         "Darwin")
-            local $APPLICATION_FILE="${${obj}_APPLICATION_FILE}"
+            local $APPLICATION_DIR="${${obj}_APPLICATION_DIR}"
 
             # Remove the Alacritty.app Utility for macOS.
             #
-            msg --uninstalling "$APPLICATION_FILE"
-            sudo rm -rf "$APPLICATION_FILE"
+            msg --uninstalling "$APPLICATION_DIR"
+            sudo rm -rf "$APPLICATION_DIR"
             ;;
     esac
     
