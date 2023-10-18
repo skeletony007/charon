@@ -35,6 +35,8 @@ ${obj}_download() {
         path_type=$(${obj}_get_api_data "$url" "$regex")
     fi
 
+    msg --downloading "${${obj}_repo}/$path -> $output"
+
     case $path_type in
         file)
             local download_url="$(
