@@ -21,10 +21,11 @@ ${obj}_download() {
     local path=$1 ## `path` could be just: `""` for the _root_
     local output=$2
 
+    local branch="${${obj}_branch}"
+
     local url="$(
-        ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path?ref=${${obj}_branch}"
+        ${obj}__fill_url "https://api.github.com/repos/%s/%s/contents/$path?ref=$branch"
     )"
-    echo "$url"
     local path_type
 
     if [[ $path == "" ]]; then
@@ -34,8 +35,9 @@ ${obj}_download() {
         path_type=$(${obj}_get_api_data "$url" "$regex")
     fi
 
+    echo "$url"
     echo "$path_type"
-    echo "Downloading $path"
+    echo "Downloading $path -> $output"
 
     case $path_type in
         file)
