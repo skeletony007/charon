@@ -114,7 +114,7 @@ main() {
     GH_WRAPPER_DATA="$(
         curl --proto '=https' -sSf "$charon_raw_url/punts/gh-wrapper"
     )"
-    create_object charon "$GH_WRAPPER_DATA" skeletony007 charon
+    create_object charon "$GH_WRAPPER_DATA"
     
     local regex='"download_url":[ ]*"([^"]*)"[^}]*"type":[ ]*"file"'
     scanl punt 1 $(charon_get_api_data  "$charom_api_data/punts?ref=main" "$regex")
