@@ -32,7 +32,10 @@ ${obj}_download() {
         local regex='"path":[ ]*"'"${path//./\\.}"'"[^}]*"type":[ ]*"([^"]*)"'
         path_type=$(${obj}_get_api_data "$url" "$regex")
     fi
-    
+
+    echo "$path_type"
+    echo "Downloading $path"
+
     case $path_type in
         file)
             local download_url="$(
