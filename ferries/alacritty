@@ -29,6 +29,7 @@ ${obj}_install() {
     case "$(uname -s)" in
         "Darwin")
             local $APPLICATION_DIR="${${obj}_APPLICATION_DIR}"
+            echo $APPLICATION_DIR
 
             # Configure the Alacritty.app Utility for macOS.
             #
