@@ -62,7 +62,7 @@ ${obj}_uninstall() {
     msg --uninstalling "$BIN_DIR/camilladsp"
     case "$(uname -s)" in
         "Darwin")
-            local $APPLICATION_DIR="${${obj}_APPLICATION_DIR}"
+            local APPLICATION_DIR="${${obj}_APPLICATION_DIR}"
 
             # Remove the Alacritty.app Utility for macOS.
             #
