@@ -34,14 +34,12 @@ ${obj}_install() {
             #
             # Uses the same icon as Terminal.app
             #
-            sudo mkdir -p "$(dirname "$APPLICATION_DIR")"
-            ${obj}_dotfiles_download '.alacritty/alacritty.app.tar.gz' - | tar -zxvf - -C "$APPLICATION_DIR"
             sudo mkdir -p "$APPLICATION_DIR/Contents/MacOS"
             sudo ln -s "$HOME/.cargo/bin/alacritty" \
                        "$APPLICATION_DIR/Contents/MacOS/alacritty"
             sudo mkdir -p "$APPLICATION_DIR/Contents/Resources"
             sudo ln -s '/System/Applications/Utilities/Terminal.app/Contents/Resources/Terminal.icns' \
-                    "$APPLICATION_DIR/Contents/Resources/alacritty.icns"
+                       "$APPLICATION_DIR/Contents/Resources/alacritty.icns"
             ;;
     esac
 
@@ -59,7 +57,7 @@ ${obj}_install() {
 }
 
 ${obj}_uninstall() {
-    local BIN_DIR="${${obj}_BIN_DIR}"
+    cargo uninstall alacritty
 
     msg --uninstalling "$BIN_DIR/camilladsp"
     case "$(uname -s)" in
@@ -73,6 +71,7 @@ ${obj}_uninstall() {
             ;;
     esac
     
-    rm -rf "$HOME/.config/alacritty/catppuccin" "$HOME/.config/alacritty/alacritty.yml"
+    rm -rf "$HOME/.config/alacritty/catppuccin" \
+           "$HOME/.config/alacritty/alacritty.yml"
 }
 
