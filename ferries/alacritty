@@ -29,12 +29,13 @@ ${obj}_install() {
     case "$(uname -s)" in
         "Darwin")
             local APPLICATION_DIR="${${obj}_APPLICATION_DIR}"
+            mkdir -p "$APPLICATION_DIR"
 
             # Configure the Alacritty.app for macOS.
             #
             # Uses the same icon as Terminal.app
             #
-            ${obj}_dotfiles_download '.alacritty/Alacritty.app' "$APPLICATION_DIR"
+            sudo ${obj}_dotfiles_download '.alacritty/Alacritty.app' "$APPLICATION_DIR"
             sudo mkdir -p "$APPLICATION_DIR/Contents/MacOS"
             sudo ln -s "$HOME/.cargo/bin/alacritty" \
                        "$APPLICATION_DIR/Contents/MacOS/alacritty"
