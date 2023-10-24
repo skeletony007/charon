@@ -35,7 +35,7 @@ ${obj}_install() {
             #
             # Uses the same icon as Terminal.app
             #
-            sudo bash -c "$(declare -f ${obj}_dotfiles_download)
+            sudo bash -c "$(declare -f)
                 ${obj}_dotfiles_download '.alacritty/Alacritty.app' "$APPLICATION_DIR"
             "
             sudo mkdir -p "$APPLICATION_DIR/Contents/MacOS"
