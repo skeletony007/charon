@@ -38,8 +38,7 @@ ${obj}_install() {
             # sudo -E bash -c "
             #     ${obj}_dotfiles_download '.alacritty/Alacritty.app' \"$APPLICATION_DIR\"
             # "
-            echo "$(declare -a)"
-            echo "$(env)"
+            echo "$(declare -p)"
             sudo mkdir -p "$APPLICATION_DIR/Contents/MacOS"
             sudo ln -s "$HOME/.cargo/bin/alacritty" \
                        "$APPLICATION_DIR/Contents/MacOS/alacritty"
