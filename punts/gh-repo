@@ -27,7 +27,6 @@ ${obj}_download() {
         ${obj}__fill_url "$(dirname "https://api.github.com/repos/%s/%s/contents/$path")""?ref=$branch"
     )"
     local path_type
-
     if [[ -z $path ]]; then
         path_type=dir
     else
@@ -35,7 +34,7 @@ ${obj}_download() {
         path_type=$(${obj}_get_api_data "$url" "$regex")
     fi
 
-    msg --downloading "${${obj}_repo}/$path -> $output"
+    msg --downloading "${${obj}_user}/${${obj}_repo}/$path -> $output"
 
     case $path_type in
         file)

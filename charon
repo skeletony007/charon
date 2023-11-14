@@ -1,17 +1,5 @@
 #!/bin/bash
 
-scanl() {
-    local function="$1"
-    local num_args=$2
-
-    $function "${@:3:$num_args}"
-    [ $? -ne 0 ] && {
-        msg --error "Failed evaluation: $function \"${@:3:$num_args}\""
-    }
-
-    shift $((2 + $num_args)) && [[ -n $@ ]] && scanl "$function" $num_args "$@"
-}
-
 punt() {
     local url="$1"
 
@@ -101,8 +89,9 @@ main() {
 
     eval "$(
         curl --proto '=https' -sSf \
-            "$bash_utils_raw_url/object/object" \
-            "$bash_utils_raw_url/shell-functions/shell-functions" \
+            "$bash_utils_raw_url/object" \
+            "$bash_utils_raw_url/scanl" \
+            "$bash_utils_raw_url/shell-functions" \
             "$charon_raw_url/punts/regex"
     )"
 
