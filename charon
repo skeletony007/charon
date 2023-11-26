@@ -1,118 +1,100 @@
 #!/bin/bash
 
-punt() {
-    local url="$1"
+eval "$(secure_curl 'https://raw.githubusercontent.com/skeletony007/charon/main/msg')"
 
-    local file=$(basename "$url")
-    local variable=$(tr '[:lower:]' '[:upper:]' <<< ${file//-/_})_DATA; local value
+cache() {
+    local action="$1"
+    local path="$HOME/.charon/$2"
+    local data="$3"
 
-    [[ -z ${!variable} ]] && {
-        if value="$(curl --proto '=https' -sSf "$url")"; then
-            eval "$variable=\"\$value\""
-        else
-            msg --error "Failed to transfer data from $url"
-            return 1
-        fi
-    } || return 0
-}
-
-parse() {
-    local command=$1
-
-    case $command in
-        install|uninstall|config)
-            local ferry=$2
-
-            if [[ $1 == *' '* ]]; then
-                msg --warning 'Operation stopped: Program names must not contain spaces'
-                return 1
-            fi
-
-            local ferry_data="$(
-                curl --proto '=https' -sSf "$charon_raw_url/ferries/$ferry"
-            )"
-            local dock_data="$(
-                cache_read dock/$ferry
-            )"
-
-            create_object $ferry "$ABSTRACT_FERRY_DATA
-                                  $ferry_data
-                                  $dock_data"
-
-            ${ferry}_${command}
-            local exit_status=$?
-
-            if [ $exit_status -ne 0 ]; then
-                if [ $command == install ]; then
-                    parse uninstall $ferry
-                fi
-                msg --warning "$(tr '[:lower:]' '[:upper:]' <<< ${command:0:1})${command:1} failed: charon $command $ferry"
-                return 1
-            elif [ $command == install ] || [ $command == uninstall ]; then
-                local uninstall_data="$(
-                    type ${ferry}_uninstall | sed -n '2,$p'
-                )"
-
-                local direction
-
-                case $command in
-                    install)
-                        direction=write    
-                    ;;
-                    uninstall)
-                        direction=delete
-                    ;;
-                esac
-
-                scanl cache_$direction 2 \
-                    all-programs $ferry \
-                    dock/$ferry "$uninstall_data"
-            fi
-
-            return 0
+    case "$action" in
+        read)
+            data="$(<"$file")" || exit 1
+            echo "$data"
             ;;
-        --help|-h)
-            curl --proto '=https' -sSf "$charon_raw_url/usage"
+        write)
+            mkdir -p "$(dirname "$file")"
+            touch "$file"
+            if ! grep -q "^$data$" "$file"; then
+                echo "$data" >> "$file" || exit 1
+            fi
+            ;;
+        delete)
+            [ -f "$file" ] || return
+            if [ -n "$data" ]; then
+                sed -i "" "/^$data\$/d" "$file" || exit 1
+            else
+                rm "$file" || exit 1
+            fi
             ;;
         *)
-            msg --unknown-command "$command"
-            return 1
+            exit 1
             ;;
     esac
 }
 
-main() {
-    local charon_api_url="https://api.github.com/repos/skeletony007/charon/contents"
-    local charon_raw_url="https://raw.githubusercontent.com/skeletony007/charon/main"
-    local bash_utils_raw_url="https://raw.githubusercontent.com/skeletony007/bash-utils/main"
-    local dotfiles_raw_url="https://raw.githubusercontent.com/skeletony007/.dotfiles/main"
+write_uninstall_script() {
+    local ferry="$1"
+    local uninstall_data
 
-    eval "$(
-        curl --proto '=https' -sSf \
-            "$bash_utils_raw_url/object" \
-            "$bash_utils_raw_url/scanl" \
-            "$bash_utils_raw_url/shell-functions" \
-            "$charon_raw_url/punts/regex"
-    )"
-
-    local cache_data="$(
-        curl --proto '=https' -sSf "$charon_raw_url/cache"
-    )"
-    create_object cache "$cache_data" "$HOME/.charon"
-
-    GH_WRAPPER_DATA="$(
-        curl --proto '=https' -sSf "$charon_raw_url/punts/gh-wrapper"
-    )"
-    create_object charon "$GH_WRAPPER_DATA"
-    
-    local regex='"download_url":[ ]*"([^"]*)"[^}]*"type":[ ]*"file"'
-    scanl punt 1 $(charon_get_api_data  "$charon_api_url/punts?ref=main" "$regex")
-
-    eval "$COLORS_DATA
-          $MESSAGES_DATA"
-
-    scanl "parse $1" 1 ${@:2}
+    uninstall_data="$(secure_curl "https://raw.githubusercontent.com/skeletony007/charon/main/ferries/$ferry-uninstall")" &&
+    cache write "ferries/$ferry-uninstall" "$uninstall_data"
 }
 
-main $@
+read_uninstall_script() {
+    local ferry="$1"
+    local uninstall_data
 
+    uninstall_data="$(cache read "ferries/$ferry-uninstall")" &&
+    echo "$uninstall_data"
+}
+
+update_installed() {
+    local script="$1"
+    local ferry="$2"
+
+    if [ "$script" == 'install' ]; then
+        cache write 'all_packages' "$ferry"
+    elif [ "$script" == 'uninstall' ]; then
+        cache delete 'all_packages' "$ferry"
+    fi
+}
+
+is_installed() {
+    local ferry="$1"
+
+    cache read 'all-packages' | grep -q "^$ferry$"
+}
+
+main() {
+    local script="$1"
+    local ferry="$2"
+
+    local data
+    {
+        [ "$script" == 'uninstall' ] && data="$(read_uninstall_script "$ferry")"
+    } || {
+        data="$(secure_curl "https://raw.githubusercontent.com/skeletony007/charon/main/ferries/$ferry-$script")"
+    } || {
+        msg --unknown-command "error getting data for ${script} ${ferry}"
+        exit 1
+    }
+
+    {
+        [ "$script" == 'install' ] && write_uninstall_script "$ferry"
+
+        (eval "$data") && update_installed "$script" "$ferry"
+    } || {
+        msg --error "remote $script $ferry contains errors"
+
+        [ "$script" == 'install' ] && {
+            is_installed "$ferry" || main 'uninstall' "$ferry"
+        }
+
+        exit 1
+    }
+
+    shift 2 && [[ -n "$@" ]] && main "$script" "$@"
+}
+
+main "$@"
