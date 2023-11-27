@@ -75,6 +75,7 @@ main() {
         [ "$script" == 'uninstall' ] && data="$(read_uninstall_script "$ferry")"
     } || {
         data="$(secure_curl "https://raw.githubusercontent.com/skeletony007/charon/main/ferries/$ferry-$script")"
+        echo "$data"
     } || {
         msg --unknown-command "error getting data for ${script} ${ferry}"
         exit 1
