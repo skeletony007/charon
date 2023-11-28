@@ -36,21 +36,17 @@ cache() {
 write_uninstall_script() {
     local ferry="$1"
     local uninstall_data
-    {
-        uninstall_data="$(secure_curl "https://raw.githubusercontent.com/skeletony007/charon/main/ferries/$ferry-uninstall")"
-    } && {
-        cache write "ferries/$ferry-uninstall" "$uninstall_data"
-    }
+    
+    uninstall_data="$(secure_curl "https://raw.githubusercontent.com/skeletony007/charon/main/ferries/$ferry-uninstall")" &&
+    cache write "ferries/$ferry-uninstall" "$uninstall_data"
 }
 
 read_uninstall_script() {
     local ferry="$1"
     local uninstall_data
-    {
-        uninstall_data="$(cache read "ferries/$ferry-uninstall")"
-    } && {
-        echo "$uninstall_data"
-    }
+
+    uninstall_data="$(cache read "ferries/$ferry-uninstall")" &&
+    echo "$uninstall_data"
 }
 
 update_installed() {
@@ -84,11 +80,9 @@ main() {
         exit 1
     }
 
-    {
-        [ "$script" == 'install' ] && write_uninstall_script "$ferry"
+    [ "$script" == 'install' ] && write_uninstall_script "$ferry"
 
-        (eval "$data") && update_installed "$script" "$ferry"
-    } || {
+    (eval "$data") && update_installed "$script" "$ferry" || {
         msg --error "remote $script $ferry contains errors"
 
         [ "$script" == 'install' ] && {
