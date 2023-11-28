@@ -16,16 +16,16 @@ msg() {
             prefix="${YELLOW}Warning:${NC} "; message="$2"
             ;;
         --unknown-command)
-            local command=$2
-            msg -e "Unknown command: $command"
+            local command="$2"
+            msg --error "Unknown command: $command"
             ;;
         --downloading)
-            local file=$2
-            msg -i "${BOLD}Downloading${NC} $file"
+            local file="$2"
+            msg --info "${BOLD}Downloading${NC} $file"
             ;;
         --installing)
-            local package_name=$2
-            msg -i "${BOLD}Installing${NC} $package_name"
+            local package_name="$2"
+            msg --info "${BOLD}Installing${NC} $package_name"
             ;;
         --uninstalling)
             local path="$2"
@@ -34,14 +34,13 @@ msg() {
             msg "Uninstalling $path... ($file_count files, $folder_size)"
             ;;
         --not-upgrading)
-            local program=$2
-            msg -w "Not upgrading $program, the latest version is already installed"
+            local program="$2"
+            msg --warning "Not upgrading $program, the latest version is already installed"
             ;;
         *)
             message="$1"
             ;;
     esac
 
-    eval "echo -e \"${prefix}${message}\" $redirect"
+    [ -n "$message" ] && eval "echo -e \"${prefix}${message}\" $redirect"
 }
-
