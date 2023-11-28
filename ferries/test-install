@@ -1,1 +1,2 @@
 echo 'the script was accessed'
+exit 1
